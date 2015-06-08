@@ -76,7 +76,6 @@ if __name__ == '__main__':
     print("Start simple automatic trading tool...")
     args = parse_input()
     account_info = get_account_info()
-    price_list_eur_usd_h1 = store_price_into_memory(instrument="EUR_USD", granularity="H1")
     if args.dump_price:
         print("Dumping price info into local file...")
         store_price_info_into_disk('EUR_USD','2012-01-01T00%3A00%3A00Z','2012-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2012
@@ -87,8 +86,24 @@ if __name__ == '__main__':
         store_price_info_into_disk('EUR_USD','2014-07-01T00%3A00%3A00Z','2014-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2014 
         store_price_info_into_disk('EUR_USD','2015-01-01T00%3A00%3A00Z','2015-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2015
         #store_price_info_into_disk('EUR_USD','2015-07-01T00%3A00%3A00Z','2015-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2015
-    
-    price_gap_sort_eur_usd_h1 = sorted( price_list_eur_usd_h1, key=lambda k: k['highBid'] -k['lowBid'],reverse = True)
-    print(price_gap_sort_eur_usd_h1[0])
-    print( price_gap_sort_eur_usd_h1[0]['highBid'] - price_gap_sort_eur_usd_h1[0]['lowBid'])
+        store_price_info_into_disk('USD_JPY','2012-01-01T00%3A00%3A00Z','2012-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2012
+        store_price_info_into_disk('USD_JPY','2012-07-01T00%3A00%3A00Z','2012-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2012 
+        store_price_info_into_disk('USD_JPY','2013-01-01T00%3A00%3A00Z','2013-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2013
+        store_price_info_into_disk('USD_JPY','2013-07-01T00%3A00%3A00Z','2013-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2013 
+        store_price_info_into_disk('USD_JPY','2014-01-01T00%3A00%3A00Z','2014-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2014
+        store_price_info_into_disk('USD_JPY','2014-07-01T00%3A00%3A00Z','2014-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2014 
+        store_price_info_into_disk('USD_JPY','2015-01-01T00%3A00%3A00Z','2015-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2015
+        #store_price_info_into_disk('USD_JPY','2012-07-01T00%3A00%3A00Z','2015-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2015
+        exit(0)
 
+    price_list_eur_usd_h1 = store_price_into_memory(instrument="EUR_USD", granularity="H1")
+    price_gap_sort_eur_usd_h1 = sorted( price_list_eur_usd_h1, key=lambda k: k['highBid'] -k['lowBid'],reverse = True)
+    for price in price_gap_sort_eur_usd_h1[0:20]:
+        print((price['highBid'] - price['lowBid'],price['time']))
+
+    price_list_usd_jpy_h1 = store_price_into_memory(instrument="USD_JPY", granularity="H1")
+    price_gap_sort_usd_jpy_h1 = sorted( price_list_usd_jpy_h1, key=lambda k: k['highBid'] -k['lowBid'],reverse = True)
+
+    for price in price_gap_sort_usd_jpy_h1[0:20]:
+        print((price['highBid'] - price['lowBid'],price['time']))
+    
