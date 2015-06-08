@@ -18,7 +18,7 @@ def get_account_info():
     output = requests.get(url, headers = AUTH_TOKEN)
     return output.text
 
-def store_price_info(instrument,start_time,end_time,granularity):
+def store_price_info_into_disk(instrument,start_time,end_time,granularity):
     """
  Get price info and dump it into local json file. 
 
@@ -72,5 +72,11 @@ if __name__ == '__main__':
     store_price_into_memory(instrument="EUR_USD", granularity="H1")
     if args.dump_price:
         print("Dumping price info into local file...")
-        store_price_info('EUR_USD','2012-01-01T00%3A00%3A00Z','2012-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2012
-        store_price_info('EUR_USD','2012-07-01T00%3A00%3A00Z','2012-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2012 
+        store_price_info_into_disk('EUR_USD','2012-01-01T00%3A00%3A00Z','2012-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2012
+        store_price_info_into_disk('EUR_USD','2012-07-01T00%3A00%3A00Z','2012-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2012 
+        store_price_info_into_disk('EUR_USD','2013-01-01T00%3A00%3A00Z','2013-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2013
+        store_price_info_into_disk('EUR_USD','2013-07-01T00%3A00%3A00Z','2013-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2013 
+        store_price_info_into_disk('EUR_USD','2014-01-01T00%3A00%3A00Z','2014-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2014
+        store_price_info_into_disk('EUR_USD','2014-07-01T00%3A00%3A00Z','2014-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2014 
+        store_price_info_into_disk('EUR_USD','2015-01-01T00%3A00%3A00Z','2015-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2015
+        #store_price_info_into_disk('EUR_USD','2015-07-01T00%3A00%3A00Z','2015-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2015 
