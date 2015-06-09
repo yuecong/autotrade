@@ -87,6 +87,44 @@ def simpleTrade1():
         profit += (price['openBid'] - price['closeAsk'])
     print("Profit of simple trade 1 for USD_JPY is %f" % profit)
 
+def simpleTrade2():
+    """
+    Ask(Buy) at the openning, Bid(Sell) at the closing for each hour
+    """
+    price_list_eur_usd_h1 = store_price_into_memory(instrument="EUR_USD", granularity="H1")
+    profit = 0.0
+    for price in price_list_eur_usd_h1:
+        profit += (price['closeBid'] - price['openAsk'])
+    print("Profit of simple trade 2 for EUR_USD is %f" % profit)
+
+    price_list_usd_jpy_h1 = store_price_into_memory(instrument="USD_JPY", granularity="H1")
+    profit = 0.0
+    for price in price_list_usd_jpy_h1:
+        profit += (price['closeBid'] - price['openAsk'])
+    print("Profit of simple trade 2 for USD_JPY is %f" % profit)
+
+def simpleTrade3():
+    """
+    Ask(Buy) at the openning, Bid(Sell) at the closing for each hour
+    """
+    price_list_eur_usd_h1 = store_price_into_memory(instrument="EUR_USD", granularity="H1")
+    profit = 0.0
+    for price in price_list_eur_usd_h1:
+        if (price['closeBid'] - price['openAsk'] > 0):
+            profit += (price['closeBid'] - price['openAsk'])
+        else:
+            profit += (price['openBid'] - price['closeAsk'])
+    print("Profit of simple trade 3 for EUR_USD is %f" % profit)
+
+    price_list_usd_jpy_h1 = store_price_into_memory(instrument="USD_JPY", granularity="H1")
+    profit = 0.0
+    for price in price_list_usd_jpy_h1:
+        if (price['closeBid'] - price['openAsk'] > 0):
+            profit += (price['closeBid'] - price['openAsk'])
+        else:
+            profit += (price['openBid'] - price['closeAsk'])
+    print("Profit of simple trade 2 for USD_JPY is %f" % profit)
+
 if __name__ == '__main__':
     print("Start simple automatic trading tool...")
     args = parse_input()
@@ -122,3 +160,6 @@ if __name__ == '__main__':
     for price in price_gap_sort_usd_jpy_h1[0:20]:
         print((price['highBid'] - price['lowBid'],price['time']))
     simpleTrade1()
+    simpleTrade2()
+    simpleTrade3()
+
