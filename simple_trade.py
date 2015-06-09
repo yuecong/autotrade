@@ -71,6 +71,21 @@ def parse_input():
 
     return parser.parse_args()
 
+def simpleTrade1():
+    """
+    bid(sell) at the openning, ask(buy) at the closing for each hour
+    """
+    price_list_eur_usd_h1 = store_price_into_memory(instrument="EUR_USD", granularity="H1")
+    profit = 0.0
+    for price in price_list_eur_usd_h1:
+        profit += (price['openBid'] - price['closeAsk'])
+    print("Profit of simple trade 1 for EUR_USD is %f" % profit)
+    
+    price_list_usd_jpy_h1 = store_price_into_memory(instrument="USD_JPY", granularity="H1")
+    profit = 0.0
+    for price in price_list_usd_jpy_h1:
+        profit += (price['openBid'] - price['closeAsk'])
+    print("Profit of simple trade 1 for USD_JPY is %f" % profit)
 
 if __name__ == '__main__':
     print("Start simple automatic trading tool...")
@@ -106,4 +121,4 @@ if __name__ == '__main__':
 
     for price in price_gap_sort_usd_jpy_h1[0:20]:
         print((price['highBid'] - price['lowBid'],price['time']))
-    
+    simpleTrade1()
