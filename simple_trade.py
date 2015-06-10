@@ -69,6 +69,9 @@ def parse_input():
     parser.add_argument('-d', '--dump_price', action = 'store_true',
                         help="dump price info into local json file")
 
+    parser.add_argument('-s', '--save_csv', action = 'store_true',
+                        help="convert all json data files into a csv file")
+
     return parser.parse_args()
 
 def simpleTrade1():
@@ -125,6 +128,30 @@ def simpleTrade3():
             profit += (price['openBid'] - price['closeAsk'])
     print("Profit of simple trade 2 for USD_JPY is %f" % profit)
 
+def convert_to_csv():
+    path = "./price_*.json"
+    files=glob.glob(path)
+    for name in files:
+        with open(name,'r') as data_file:
+            data = json.load(data_file)
+            prices = data['candles']
+            f = open(name[:len(name)-4] + 'csv','w')
+            f.write('time,openBid,openAsk,highBid,highAsk,lowBid,lowAsk,closeBid,closeAsk,volume,complete')
+            for price in prices:
+                price_str = ( price['time'] +',' + 
+                              str(price['openBid']) +',' +
+                              str(price['openAsk']) +',' + 
+                              str(price['highBid']) +',' + 
+                              str(price['highAsk']) +',' + 
+                              str(price['lowBid']) +',' +
+                              str(price['lowAsk']) +',' + 
+                              str(price['closeBid']) +',' + 
+                              str(price['closeAsk']) +',' +
+                              str(price['volume']) +',' +  
+                              str(price['complete'])  + '\n') 
+                f.write(price_str)
+            f.close()
+
 if __name__ == '__main__':
     print("Start simple automatic trading tool...")
     args = parse_input()
@@ -148,6 +175,10 @@ if __name__ == '__main__':
         store_price_info_into_disk('USD_JPY','2015-01-01T00%3A00%3A00Z','2015-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2015
         #store_price_info_into_disk('USD_JPY','2012-07-01T00%3A00%3A00Z','2015-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2015
         exit(0)
+    if args.save_csv:
+        convert_to_csv()
+        exit(0)
+
 
     price_list_eur_usd_h1 = store_price_into_memory(instrument="EUR_USD", granularity="H1")
     price_gap_sort_eur_usd_h1 = sorted( price_list_eur_usd_h1, key=lambda k: k['highBid'] -k['lowBid'],reverse = True)
