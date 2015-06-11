@@ -136,9 +136,15 @@ def convert_to_csv():
             data = json.load(data_file)
             prices = data['candles']
             f = open(name[:len(name)-4] + 'csv','w')
-            f.write('time,openBid,openAsk,highBid,highAsk,lowBid,lowAsk,closeBid,closeAsk,volume,complete')
+            f.write('year,month,day,hour,minute,second,openBid,openAsk,highBid,highAsk,lowBid,lowAsk,closeBid,closeAsk,volume,complete\n')
             for price in prices:
-                price_str = ( price['time'] +',' + 
+                year = price['time'][0:4]
+                month = price['time'][5:7]
+                day = price['time'][8:10]
+                hour = price['time'][11:13]
+                minute = price['time'][14:16]
+                second = price['time'][17:19]
+                price_str = ( year +',' + month +','  + day +',' + hour +',' + minute +',' + second +',' +  
                               str(price['openBid']) +',' +
                               str(price['openAsk']) +',' + 
                               str(price['highBid']) +',' + 
