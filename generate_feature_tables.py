@@ -6,20 +6,35 @@ log = logging.getLogger(__name__)
 print = log.info
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.basicConfig(level = logging.INFO,format = '%(asctime)s [%(levelname)s] %(message)s', datefmt = '%Y-%m-%d %H:%M:%S')
+MINMUM_PIP =5
 
+def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 10000):
+    action = 'hold'
+    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
+    cal_date = current_date + datetime.timedelta(days= 1)
+    cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
+    if day_price_info.has_key(cal_date_str): #only calculate when there is feature data
+        pips = (float(day_price_info[cal_date_str][4]) - float(day_price_info[cal_date_str][3])) *pip_unit # (day_close - day_open ) for the next day
+        #print(pips)
+        if int(pips) > MINMUM_PIP: #Buy
+            action = 'buy'
+        elif int(pips) < -1 * MINMUM_PIP: #Sell
+            action ='sell'
+    return action
 def calculate_Momentum_roc(day_price_info,date_str,n_day):
     momentum =0.0
     roc =0.0
+    #print(date_str)
     current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
     cal_date = current_date -datetime.timedelta(days= n_day)
-    print(cal_date)
+    #print(cal_date)
     cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
-    print(cal_date_str)
+    #print(cal_date_str)
     if day_price_info.has_key(cal_date_str): #only calculate when there is history data
-        momentum = day_price_info[date_str][4] - day_price_info[cal_date_str][4]  # day_close - n_day_close
-        roc = (day_price_info[date_str][4] - day_price_info[cal_date_str][4]) /day_price_info[cal_date_str][4] #(day_close - n_day_close)/ n_day_close
-    print(momentum)
-    print(roc)
+        momentum = float(day_price_info[date_str][4]) - float(day_price_info[cal_date_str][4])  # day_close - n_day_close
+        roc = (float(day_price_info[date_str][4]) - float(day_price_info[cal_date_str][4])) /float(day_price_info[cal_date_str][4]) #(day_close - n_day_close)/ n_day_close
+    #print(momentum)
+    #print(roc)
     return momentum,roc
 
 def generate_day_price_info(currency_pair,input_csv,output_csv):
@@ -70,28 +85,91 @@ def generate_day_price_info(currency_pair,input_csv,output_csv):
                 day_price_total += ((float(h1_price[6]) +float(h1_price[7]) ) /2.0) * float(h1_price[8])
                 day_volume_total += float(h1_price[8])
             day_avg = day_price_total / day_volume_total
-            #print(day_volume_total)
             data[5] = day_high
             data[6] = day_low
             data[7] = day_avg
             day_price_info[key] = data
             f.write(str(data).strip('[]')+ '\n')
-            #print(data[5])
-            #print(data[6])
-            #print(data[7])
-            #break
 
 
-def update_day_price_info(update_csvs,currency_part):
+def update_day_price_info(update_csv_lists,source_csv_lists,curreny_pair):
     '''
-      Update price info for specified csv file
+      Update price info for specified csv file.
+      Parameter:
+        - update_csv_lists: The files need to be updated
+        - source_csv_lists: The files used for information update
     '''
     #read all csv and get a integrated day_price_info
+    source_day_price_info ={}
+    for source_csv in source_csv_lists:
+         with open(source_csv,'r') as f:
+             lines = f.readlines()
+             for line in lines:
+                 line = line[:-2] #remove return line character
+                 line =line.translate(None,"\'")
+                 m_list = line.split(',')
+                 source_day_price_info[m_list[0]] = m_list
+
+    #Update price info for the files indicated by update_csv_files
+    for update_csv in update_csv_lists:
+         update_day_price_info = {}
+         with open(update_csv,'r') as f:
+             lines = f.readlines()
+             for line in lines:
+                 line = line[:-2] #remove return line character
+                 line =line.translate(None,"\'")
+                 m_list = line.split(',')
+                 m_list +=([0]*20)
+                 #print(len(m_list))
+                 key = m_list[0]
+
+                 #Calculate Momentum and ROC 
+                 #3-day info    
+                 (momrntum_3day,roc_3day) = calculate_Momentum_roc(source_day_price_info,key,3)
+                 m_list[8] =  momrntum_3day
+                 m_list[14] = roc_3day
+
+                 #4-day info    
+                 (momrntum_4day,roc_4day) = calculate_Momentum_roc(source_day_price_info,key,4)
+                 m_list[9] =  momrntum_4day
+                 m_list[15] = roc_4day
     
-    #Calculate Momentum and ROC 
-    #3-day info    
-    #momrntum_roc_3day = calculate_Momentum_roc(day_price_info,'2012-01-04',3)
-    
+                 #5-day info    
+                 (momrntum_5day,roc_5day) = calculate_Momentum_roc(source_day_price_info,key,5)
+                 m_list[10] =  momrntum_5day
+                 m_list[16] = roc_5day
+
+
+                 #8-day info    
+                 (momrntum_8day,roc_8day) = calculate_Momentum_roc(source_day_price_info,key,8)
+                 m_list[11] =  momrntum_8day
+                 m_list[17] = roc_8day
+
+                 #9-day info    
+                 (momrntum_9day,roc_9day) = calculate_Momentum_roc(source_day_price_info,key,9)
+                 m_list[12] =  momrntum_9day
+                 m_list[18] = roc_9day
+
+
+                 #10-day info    
+                 (momrntum_10day,roc_10day) = calculate_Momentum_roc(source_day_price_info,key,10)
+                 m_list[13] =  momrntum_10day
+                 m_list[19] = roc_10day
+
+                 #predic_action (next_day)
+                 pip_unit = 10000
+                 if 'JPY' in update_csv:
+                     pip_unit = 100
+                 m_list[2] = calculate_pridiction_action_next_day(source_day_price_info,key,pip_unit)
+
+                 update_day_price_info[key] = m_list
+
+         #write updated info into the csv file
+         with open(update_csv,'w') as f:
+             for key in sorted(update_day_price_info.keys()):
+                 f.write(str(update_day_price_info[key]).strip('[]')+ '\n')
+             f.truncate()
+
 if __name__ == '__main__':
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2012-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2012-01-01_D1.csv")
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2012-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2012-07-01_D1.csv")
@@ -101,6 +179,14 @@ if __name__ == '__main__':
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2014-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2014-07-01_D1.csv")
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2015-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2015-01-01_D1.csv")
     update_day_price_info(['price_EUR_USD_2012-01-01_D1.csv',
+                          'price_EUR_USD_2012-07-01_D1.csv',
+                          'price_EUR_USD_2013-01-01_D1.csv',
+                          'price_EUR_USD_2013-07-01_D1.csv',
+                          'price_EUR_USD_2014-01-01_D1.csv',
+                          'price_EUR_USD_2014-07-01_D1.csv',
+                          'price_EUR_USD_2015-01-01_D1.csv',
+                          ],
+                          ['price_EUR_USD_2012-01-01_D1.csv',
                           'price_EUR_USD_2012-07-01_D1.csv',
                           'price_EUR_USD_2013-01-01_D1.csv',
                           'price_EUR_USD_2013-07-01_D1.csv',
