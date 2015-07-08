@@ -9,9 +9,38 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.basicConfig(level = logging.INFO,format = '%(asctime)s [%(levelname)s] %(message)s', datefmt = '%Y-%m-%d %H:%M:%S')
 MINMUM_PIP =5
 AVOID_ZERO_DIVISION = 0.0000001
+
+#year,month,day,hour,minute,second,openBid,openAsk,highBid,highAsk,lowBid,lowAsk,closeBid,closeAsk,volume,complete
+#define column number in the array of source csv
+I_YEAR = 0
+I_MONTH = 1
+I_DAY = 2
+I_OPENBID = 6
+I_OPENASK = 7
+I_HIGHBID = 8
+I_HIGHASK = 9
+I_LOWBID = 10
+I_LOWASK = 11
+I_CLOSEBID = 12
+I_CLOSEASK = 13
+I_VOLUME = 14
+
+#define column number in the arrary for generated label/features table
+N_DATE = 0
+N_CURRENCY_PAIR = 1
+N_PREDICTION_ACTION = 2
+N_DAY_OPEN = 3
+N_DAY_CLOSE = 4
+N_DAY_HIGH = 5
+N_DAY_LOW = 6
+N_DAY_AVG = 7
+N_MOMENTUM_3 = 8
+
+
 def calculate_fast_k_d(day_price_info,date_str,n_day):
    price = day_price_info[date_str]
-   fast_k = 100.0 * (float(price[4]) - float(price[6])) /(float(price[5]) - float(price[6]) + AVOID_ZERO_DIVISION)   #100 * [( C - L (n) ) / ( H (n) – L (n) )] . Use the data in same day as initial value
+   #100 * [( C - L (n) ) / ( H (n) – L (n) )] . Use the data in same day as initial value
+   fast_k = 100.0 * (float(price[4]) - float(price[6])) /(float(price[5]) - float(price[6]) + AVOID_ZERO_DIVISION)   
    fast_d = fast_k
    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
 
@@ -20,7 +49,8 @@ def calculate_fast_k_d(day_price_info,date_str,n_day):
    cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
    if day_price_info.has_key(cal_date_str): #only calculate when there is history data
        price_n_day = day_price_info[cal_date_str]
-       fast_k = 100.0 * (float(price[4]) - float(price_n_day[6])) /(float(price_n_day[5]) - float(price_n_day[6]) + AVOID_ZERO_DIVISION)   #100 * [( C – L (n) ) / ( H (n) – L (n) )] .
+       #100 * [( C – L (n) ) / ( H (n) – L (n) )]
+       fast_k = 100.0 * (float(price[4]) - float(price_n_day[6])) /(float(price_n_day[5]) - float(price_n_day[6]) + AVOID_ZERO_DIVISION)
        fast_d = fast_k
 
    #calculate fast_d  (3-period average of fask_k) 
@@ -47,7 +77,7 @@ def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 1000
     cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
     if day_price_info.has_key(cal_date_str): #only calculate when there is feature data
         pips = (float(day_price_info[cal_date_str][4]) - float(day_price_info[cal_date_str][3])) *pip_unit # (day_close - day_open ) for the next day
-        print(pips)
+        #print(pips)
         if int(pips) > MINMUM_PIP: #Buy
             action = 'buy'
         elif int(pips) < -1 * MINMUM_PIP: #Sell
@@ -202,7 +232,18 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  (fast_k_8day,fast_d_8day) = calculate_fast_k_d(source_day_price_info,key,8)
                  (fast_k_9day,fast_d_9day) = calculate_fast_k_d(source_day_price_info,key,9)
                  (fast_k_10day,fast_d_10day) = calculate_fast_k_d(source_day_price_info,key,10)
-
+                 m_list[20]= fast_k_3day
+                 m_list[21]= fast_d_3day
+                 m_list[22]= fast_k_4day
+                 m_list[23]= fast_d_4day
+                 m_list[24]= fast_k_5day
+                 m_list[25]= fast_d_5day
+                 m_list[26]= fast_k_8day
+                 m_list[27]= fast_d_8day
+                 m_list[28]= fast_k_9day
+                 m_list[29]= fast_d_9day
+                 m_list[30]= fast_k_10day
+                 m_list[31]= fast_d_10day
                  update_day_price_info[key] = m_list
 
          #write updated info into the csv file
