@@ -15,12 +15,13 @@ def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 1000
     cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
     if day_price_info.has_key(cal_date_str): #only calculate when there is feature data
         pips = (float(day_price_info[cal_date_str][4]) - float(day_price_info[cal_date_str][3])) *pip_unit # (day_close - day_open ) for the next day
-        #print(pips)
+        print(pips)
         if int(pips) > MINMUM_PIP: #Buy
             action = 'buy'
         elif int(pips) < -1 * MINMUM_PIP: #Sell
             action ='sell'
     return action
+
 def calculate_Momentum_roc(day_price_info,date_str,n_day):
     momentum =0.0
     roc =0.0
@@ -92,12 +93,13 @@ def generate_day_price_info(currency_pair,input_csv,output_csv):
             f.write(str(data).strip('[]')+ '\n')
 
 
-def update_day_price_info(update_csv_lists,source_csv_lists,curreny_pair):
+def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
     '''
       Update price info for specified csv file.
       Parameter:
         - update_csv_lists: The files need to be updated
         - source_csv_lists: The files used for information update
+        - currency_pair : Use it to decide the pip unit. 100 or 10000
     '''
     #read all csv and get a integrated day_price_info
     source_day_price_info ={}
@@ -158,7 +160,7 @@ def update_day_price_info(update_csv_lists,source_csv_lists,curreny_pair):
 
                  #predic_action (next_day)
                  pip_unit = 10000
-                 if 'JPY' in update_csv:
+                 if 'JPY' in currency_pair:
                      pip_unit = 100
                  m_list[2] = calculate_pridiction_action_next_day(source_day_price_info,key,pip_unit)
 
@@ -195,4 +197,29 @@ if __name__ == '__main__':
                           'price_EUR_USD_2015-01-01_D1.csv',
                           ],'EUR_USD')
 
+  
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2012-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2012-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2012-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2012-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2013-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2013-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2013-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2013-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2014-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2014-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2014-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2014-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2015-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2015-01-01_D1.csv")
+
+    update_day_price_info(['price_USD_JPY_2012-01-01_D1.csv',
+                          'price_USD_JPY_2012-07-01_D1.csv',
+                          'price_USD_JPY_2013-01-01_D1.csv',
+                          'price_USD_JPY_2013-07-01_D1.csv',
+                          'price_USD_JPY_2014-01-01_D1.csv',
+                          'price_USD_JPY_2014-07-01_D1.csv',
+                          'price_USD_JPY_2015-01-01_D1.csv',
+                          ],
+                          ['price_USD_JPY_2012-01-01_D1.csv',
+                          'price_USD_JPY_2012-07-01_D1.csv',
+                          'price_USD_JPY_2013-01-01_D1.csv',
+                          'price_USD_JPY_2013-07-01_D1.csv',
+                          'price_USD_JPY_2014-01-01_D1.csv',
+                          'price_USD_JPY_2014-07-01_D1.csv',
+                          'price_USD_JPY_2015-01-01_D1.csv',
+                          ],'USD_JPY')
 
