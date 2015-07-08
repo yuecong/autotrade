@@ -195,7 +195,7 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  line = line[:-2] #remove return line character
                  line =line.translate(None,"\'")
                  m_list = line.split(',')
-                 source_day_price_info[m_list[0]] = m_list
+                 source_day_price_info[m_list[N_DATE]] = m_list
 
     #Update price info for the files indicated by update_csv_files
     for update_csv in update_csv_lists:
@@ -212,41 +212,41 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  #Calculate Momentum and ROC 
                  #3-day info    
                  (momrntum_3day,roc_3day) = calculate_Momentum_roc(source_day_price_info,key,3)
-                 m_list[8] =  momrntum_3day
-                 m_list[14] = roc_3day
+                 m_list[N_MOMENTUM_3] =  momrntum_3day
+                 m_list[N_ROC_3] = roc_3day
 
                  #4-day info    
                  (momrntum_4day,roc_4day) = calculate_Momentum_roc(source_day_price_info,key,4)
-                 m_list[9] =  momrntum_4day
-                 m_list[15] = roc_4day
+                 m_list[N_MOMENTUM_4] =  momrntum_4day
+                 m_list[N_ROC_4] = roc_4day
     
                  #5-day info    
                  (momrntum_5day,roc_5day) = calculate_Momentum_roc(source_day_price_info,key,5)
-                 m_list[10] =  momrntum_5day
-                 m_list[16] = roc_5day
+                 m_list[N_MOMENTUM_5] =  momrntum_5day
+                 m_list[N_ROC_5] = roc_5day
 
 
                  #8-day info    
                  (momrntum_8day,roc_8day) = calculate_Momentum_roc(source_day_price_info,key,8)
-                 m_list[11] =  momrntum_8day
-                 m_list[17] = roc_8day
+                 m_list[N_MOMENTUM_8] =  momrntum_8day
+                 m_list[N_ROC_8] = roc_8day
 
                  #9-day info    
                  (momrntum_9day,roc_9day) = calculate_Momentum_roc(source_day_price_info,key,9)
-                 m_list[12] =  momrntum_9day
-                 m_list[18] = roc_9day
+                 m_list[N_MOMENTUM_9] =  momrntum_9day
+                 m_list[N_ROC_9] = roc_9day
 
 
                  #10-day info    
                  (momrntum_10day,roc_10day) = calculate_Momentum_roc(source_day_price_info,key,10)
-                 m_list[13] =  momrntum_10day
-                 m_list[19] = roc_10day
+                 m_list[N_MOMENTUM_10] =  momrntum_10day
+                 m_list[N_ROC_10] = roc_10day
 
                  #predic_action (next_day)
                  pip_unit = 10000
                  if 'JPY' in currency_pair:
                      pip_unit = 100
-                 m_list[2] = calculate_pridiction_action_next_day(source_day_price_info,key,pip_unit)
+                 m_list[N_PREDICTION_ACTION] = calculate_pridiction_action_next_day(source_day_price_info,key,pip_unit)
         
                  #FAST_K & FAST_D
                  (fast_k_3day,fast_d_3day) = calculate_fast_k_d(source_day_price_info,key,3)
@@ -255,18 +255,18 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  (fast_k_8day,fast_d_8day) = calculate_fast_k_d(source_day_price_info,key,8)
                  (fast_k_9day,fast_d_9day) = calculate_fast_k_d(source_day_price_info,key,9)
                  (fast_k_10day,fast_d_10day) = calculate_fast_k_d(source_day_price_info,key,10)
-                 m_list[20]= fast_k_3day
-                 m_list[21]= fast_d_3day
-                 m_list[22]= fast_k_4day
-                 m_list[23]= fast_d_4day
-                 m_list[24]= fast_k_5day
-                 m_list[25]= fast_d_5day
-                 m_list[26]= fast_k_8day
-                 m_list[27]= fast_d_8day
-                 m_list[28]= fast_k_9day
-                 m_list[29]= fast_d_9day
-                 m_list[30]= fast_k_10day
-                 m_list[31]= fast_d_10day
+                 m_list[N_FAST_K_3]= fast_k_3day
+                 m_list[N_FAST_D_3]= fast_d_3day
+                 m_list[N_FAST_K_4]= fast_k_4day
+                 m_list[N_FAST_D_4]= fast_d_4day
+                 m_list[N_FAST_K_5]= fast_k_5day
+                 m_list[N_FAST_D_5]= fast_d_5day
+                 m_list[N_FAST_K_8]= fast_k_8day
+                 m_list[N_FAST_D_8]= fast_d_8day
+                 m_list[N_FAST_K_9]= fast_k_9day
+                 m_list[N_FAST_D_9]= fast_d_9day
+                 m_list[N_FAST_K_10]= fast_k_10day
+                 m_list[N_FAST_D_10]= fast_d_10day
                  update_day_price_info[key] = m_list
 
          #write updated info into the csv file
