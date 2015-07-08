@@ -35,6 +35,29 @@ N_DAY_HIGH = 5
 N_DAY_LOW = 6
 N_DAY_AVG = 7
 N_MOMENTUM_3 = 8
+N_MOMENTUM_4 = 9
+N_MOMENTUM_5 = 10
+N_MOMENTUM_8 = 11
+N_MOMENTUM_9 = 12
+N_MOMENTUM_10 = 13
+N_ROC_3 = 14
+N_ROC_4 = 15
+N_ROC_5 = 16
+N_ROC_8 = 17
+N_ROC_9 = 18
+N_ROC_10 = 19
+N_FAST_K_3 = 20
+N_FAST_D_3 = 21
+N_FAST_K_4 = 22
+N_FAST_D_4 = 23
+N_FAST_K_5 = 24
+N_FAST_D_5 = 25
+N_FAST_K_8 = 26
+N_FAST_D_8 = 27
+N_FAST_K_9 = 28
+N_FAST_D_9 = 29
+N_FAST_K_10 = 30
+N_FAST_D_10 = 31
 
 
 def calculate_fast_k_d(day_price_info,date_str,n_day):
@@ -115,42 +138,42 @@ def generate_day_price_info(currency_pair,input_csv,output_csv):
         lines = f.readlines()
         for line in lines:
             m_list = line.split(',')
-            if m_list[0] == 'year': #CSV header
+            if m_list[I_YEAR] == 'year': #CSV header
                 continue
-            key = m_list[0] +'-' + m_list[1] + '-' + m_list[2]
+            key = m_list[I_YEAR] +'-' + m_list[I_MONTH] + '-' + m_list[I_DAY]
             if input_price_h1.has_key(key):#append data into the same date
-                input_price_h1[key].append(m_list[6:15])
+                input_price_h1[key].append(m_list[I_OPENBID:I_VOLUME +1])
             else:
                 input_price_h1[key] = []
-                input_price_h1[key].append(m_list[6:15])
+                input_price_h1[key].append(m_list[I_OPENBID:I_VOLUME +1])
     
     #generate price info to day base
     with open(output_csv,'w') as f:
         day_price_info = {}
         for key in sorted(input_price_h1.keys()):
             data = [0] *8
-            data[0] = key #date
-            data[1] = currency_pair # currency_pair
-            data[2] = 'hold' #next_day_prediction_action
-            data[3] = (float(input_price_h1[key][0][0]) + float(input_price_h1[key][0][1])) /2.0 # day_open (Openbid + OpenAsk )/2
-            data[4] = (float(input_price_h1[key][-1][6]) + float(input_price_h1[key][-1][7])) /2.0 # day_close (closebid + closeAsk )/2
+            data[N_DATE] = key #date
+            data[N_CURRENCY_PAIR] = currency_pair # currency_pair
+            data[N_PREDICTION_ACTION] = 'hold' #next_day_prediction_action
+            data[N_DAY_OPEN] = (float(input_price_h1[key][0][I_OPENBID - I_OPENBID]) + float(input_price_h1[key][0][I_OPENASK - I_OPENBID])) /2.0 # day_open (Openbid + OpenAsk )/2
+            data[N_DAY_CLOSE] = (float(input_price_h1[key][-1][I_CLOSEBID - I_OPENBID]) + float(input_price_h1[key][-1][I_CLOSEASK -I_OPENBID])) /2.0 # day_close (closebid + closeAsk )/2
             #day_high,day_low,day_avg
-            day_high = (float(input_price_h1[key][0][2]) + float(input_price_h1[key][0][3])) / 2.0 #use the first highBid/highAsk as initial value
-            day_low = (float(input_price_h1[key][0][4]) + float(input_price_h1[key][0][5])) / 2.0 #use the first lowBid/lowAsk as initial value
+            day_high = (float(input_price_h1[key][0][I_HIGHBID - I_OPENBID]) + float(input_price_h1[key][0][ I_HIGHASK - I_OPENBID])) / 2.0 #use the first highBid/highAsk as initial value
+            day_low = (float(input_price_h1[key][0][I_LOWBID - I_OPENBID]) + float(input_price_h1[key][0][ I_LOWASK - I_OPENBID])) / 2.0 #use the first lowBid/lowAsk as initial value
             day_avg =0.0
             day_volume_total =0.0
             day_price_total =0.0
             for h1_price in input_price_h1[key]:
-                if day_high < (float(h1_price[2]) + float(h1_price[3])) /2.0:
-                    day_high = (float(h1_price[2]) + float(h1_price[3])) /2.0
-                if day_low > (float(h1_price[4]) + float(h1_price[5])) /2.0:
-                    day_low = (float(h1_price[4]) + float(h1_price[5])) /2.0
-                day_price_total += ((float(h1_price[6]) +float(h1_price[7]) ) /2.0) * float(h1_price[8])
-                day_volume_total += float(h1_price[8])
+                if day_high < (float(h1_price[I_HIGHBID - I_OPENBID]) + float(h1_price[I_HIGHASK - I_OPENBID])) /2.0:
+                    day_high = (float(h1_price[I_HIGHBID - I_OPENBID]) + float(h1_price[I_HIGHASK - I_OPENBID])) /2.0
+                if day_low > (float(h1_price[I_LOWBID - I_OPENBID]) + float(h1_price[I_LOWASK - I_OPENBID])) /2.0:
+                    day_low = (float(h1_price[I_LOWBID - I_OPENBID]) + float(h1_price[I_LOWASK - I_OPENBID])) /2.0
+                day_price_total += ((float(h1_price[I_CLOSEBID - I_OPENBID]) +float(h1_price[I_CLOSEASK - I_OPENBID]) ) /2.0) * float(h1_price[8])
+                day_volume_total += float(h1_price[I_VOLUME - I_OPENBID])
             day_avg = day_price_total / day_volume_total
-            data[5] = day_high
-            data[6] = day_low
-            data[7] = day_avg
+            data[N_DAY_HIGH] = day_high
+            data[N_DAY_LOW] = day_low
+            data[N_DAY_AVG] = day_avg
             day_price_info[key] = data
             f.write(str(data).strip('[]')+ '\n')
 
@@ -184,7 +207,7 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  line =line.translate(None,"\'")
                  m_list = line.split(',')
                  m_list +=([0]*30) #expand column to add more indicators
-                 key = m_list[0]
+                 key = m_list[N_DATE]
 
                  #Calculate Momentum and ROC 
                  #3-day info    
