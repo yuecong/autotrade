@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import print_function
 import logging
 import datetime
@@ -7,6 +8,37 @@ print = log.info
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.basicConfig(level = logging.INFO,format = '%(asctime)s [%(levelname)s] %(message)s', datefmt = '%Y-%m-%d %H:%M:%S')
 MINMUM_PIP =5
+AVOID_ZERO_DIVISION = 0.0000001
+def calculate_fast_k_d(day_price_info,date_str,n_day):
+   price = day_price_info[date_str]
+   fast_k = 100.0 * (float(price[4]) - float(price[6])) /(float(price[5]) - float(price[6]) + AVOID_ZERO_DIVISION)   #100 * [( C - L (n) ) / ( H (n) – L (n) )] . Use the data in same day as initial value
+   fast_d = fast_k
+   current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
+
+   #calculate fast_k
+   cal_date = current_date - datetime.timedelta(days= n_day)
+   cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
+   if day_price_info.has_key(cal_date_str): #only calculate when there is history data
+       price_n_day = day_price_info[cal_date_str]
+       fast_k = 100.0 * (float(price[4]) - float(price_n_day[6])) /(float(price_n_day[5]) - float(price_n_day[6]) + AVOID_ZERO_DIVISION)   #100 * [( C – L (n) ) / ( H (n) – L (n) )] .
+       fast_d = fast_k
+
+   #calculate fast_d  (3-period average of fask_k) 
+   cal_date_1 = current_date - datetime.timedelta(days= n_day +1) #one day before
+   cal_date_str_1 = datetime.date.strftime(cal_date_1,'%Y-%m-%d')
+   cal_date_2 = current_date - datetime.timedelta(days= n_day +2) # two day before
+   cal_date_str_2 = datetime.date.strftime(cal_date_2,'%Y-%m-%d')
+   if day_price_info.has_key(cal_date_str) and day_price_info.has_key(cal_date_str_1) and day_price_info.has_key(cal_date_str_2): #only calculate when there is history data
+       price_n_day = day_price_info[cal_date_str]
+       price_n_day_1 = day_price_info[cal_date_str_1]
+       price_n_day_2 = day_price_info[cal_date_str_2]
+       fast_d = ( (100.0 * (float(price[4]) - float(price_n_day[6])) /(float(price_n_day[5]) - float(price_n_day[6]) + AVOID_ZERO_DIVISION))
+                 + (100.0 * (float(price[4]) - float(price_n_day_1[6])) /(float(price_n_day_1[5]) - float(price_n_day_1[6]) + AVOID_ZERO_DIVISION))
+                 + (100.0 * (float(price[4]) - float(price_n_day_2[6])) /(float(price_n_day_2[5]) - float(price_n_day_2[6]) + AVOID_ZERO_DIVISION))
+                 ) / 3.0
+
+   return fast_k,fast_d
+
 
 def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 10000):
     action = 'hold'
@@ -121,8 +153,7 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  line = line[:-2] #remove return line character
                  line =line.translate(None,"\'")
                  m_list = line.split(',')
-                 m_list +=([0]*20)
-                 #print(len(m_list))
+                 m_list +=([0]*30) #expand column to add more indicators
                  key = m_list[0]
 
                  #Calculate Momentum and ROC 
@@ -163,6 +194,14 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  if 'JPY' in currency_pair:
                      pip_unit = 100
                  m_list[2] = calculate_pridiction_action_next_day(source_day_price_info,key,pip_unit)
+        
+                 #FAST_K & FAST_D
+                 (fast_k_3day,fast_d_3day) = calculate_fast_k_d(source_day_price_info,key,3)
+                 (fast_k_4day,fast_d_4day) = calculate_fast_k_d(source_day_price_info,key,4)
+                 (fast_k_5day,fast_d_5day) = calculate_fast_k_d(source_day_price_info,key,5)
+                 (fast_k_8day,fast_d_8day) = calculate_fast_k_d(source_day_price_info,key,8)
+                 (fast_k_9day,fast_d_9day) = calculate_fast_k_d(source_day_price_info,key,9)
+                 (fast_k_10day,fast_d_10day) = calculate_fast_k_d(source_day_price_info,key,10)
 
                  update_day_price_info[key] = m_list
 
