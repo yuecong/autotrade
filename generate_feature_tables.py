@@ -82,14 +82,15 @@ def generate_day_price_info(currency_pair,input_csv,output_csv):
             #break
 
 
-def cal_day_price_info():
+def update_day_price_info(update_csvs,currency_part):
     '''
-      Read all day price info and calculate 
+      Update price info for specified csv file
     '''
-    #Calculate Momentum and ROC 
-    #3-day info
+    #read all csv and get a integrated day_price_info
     
-    momrntum_roc_3day = calculate_Momentum_roc(day_price_info,'2012-01-04',3)
+    #Calculate Momentum and ROC 
+    #3-day info    
+    #momrntum_roc_3day = calculate_Momentum_roc(day_price_info,'2012-01-04',3)
     
 if __name__ == '__main__':
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2012-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2012-01-01_D1.csv")
@@ -99,4 +100,13 @@ if __name__ == '__main__':
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2014-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2014-01-01_D1.csv")
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2014-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2014-07-01_D1.csv")
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2015-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2015-01-01_D1.csv")
+    update_day_price_info(['price_EUR_USD_2012-01-01_D1.csv',
+                          'price_EUR_USD_2012-07-01_D1.csv',
+                          'price_EUR_USD_2013-01-01_D1.csv',
+                          'price_EUR_USD_2013-07-01_D1.csv',
+                          'price_EUR_USD_2014-01-01_D1.csv',
+                          'price_EUR_USD_2014-07-01_D1.csv',
+                          'price_EUR_USD_2015-01-01_D1.csv',
+                          ],'EUR_USD')
+
 
