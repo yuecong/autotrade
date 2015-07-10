@@ -58,8 +58,81 @@ N_FAST_K_9 = 28
 N_FAST_D_9 = 29
 N_FAST_K_10 = 30
 N_FAST_D_10 = 31
+N_PROC_12 = 32
+N_PROC_13 = 33
+N_PROC_14 = 34
+N_PROC_15 = 35
+N_WEIGHTED_CLOSE_PRICE = 36
+N_WILLIAM_A_D = 37
+N_ADOSC_1 = 38
+N_ADOSC_2 = 39
+N_ADOSC_3 = 40
+N_ADOSC_4 = 41
+N_ADOSC_5 = 42
 
 
+
+N_PIP = 91
+N_VOLUME = 92
+
+
+MAXIMUM_COLUMN = 100
+
+def calculate_adosc(day_price_info,date_str,n_day):
+    adosc = 0
+    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
+    cal_date = current_date - datetime.timedelta(days= n_day)
+    cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
+    if day_price_info.has_key(cal_date_str): #only calculate when there is history data
+        price = day_price_info[cal_date_str]
+        day_close = float(price[N_DAY_CLOSE])
+        day_high = float(price[N_DAY_HIGH])
+        day_low  = float(price[N_DAY_LOW])
+        volume = float(price[N_VOLUME])
+        adosc = int(( (day_close - day_low) - ( day_high - day_close) ) / (day_high - day_low + AVOID_ZERO_DIVISION) * volume)
+    return adosc
+
+def calculate_day_a_d(day_price_info,date_str):
+    day_a_d = 0.0
+    price = day_price_info[date_str]
+    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
+    cal_date = current_date - datetime.timedelta(days= 1)
+    cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
+    if day_price_info.has_key(cal_date_str): #only calculate when there is history data
+        price_yesterday = day_price_info[cal_date_str]
+        true_high = max(float(price[N_DAY_HIGH]), float(price_yesterday[N_DAY_HIGH]))
+        true_low =  min(float(price[N_DAY_LOW]), float(price_yesterday[N_DAY_LOW]))
+        today_close = float(price[N_DAY_CLOSE])
+        yesterday_close = float(price_yesterday[N_DAY_CLOSE])
+        if today_close > yesterday_close :
+            day_a_d = today_close - true_high
+        elif today_close < yesterday_close :
+            day_a_d = today_close - true_low
+        elif today_close == yesterday_close :
+            day_a_d = 0.0
+    return day_a_d
+
+def calculate_william_a_d(day_price_info,date_str):
+    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
+    yesterday_date = current_date - datetime.timedelta(days= 1)
+    yesterday_date_str = datetime.date.strftime(yesterday_date,'%Y-%m-%d')
+    if day_price_info.has_key(yesterday_date_str): #only calculate when there is history data
+        william_a_d = calculate_day_a_d(day_price_info,date_str) + calculate_day_a_d(day_price_info,yesterday_date_str)
+    else:
+        william_a_d = calculate_day_a_d(day_price_info,date_str)
+    return william_a_d
+
+def calculate_proc(day_price_info,date_str,n_day):
+    proc = 0.0
+    price = day_price_info[date_str]
+    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
+    cal_date = current_date - datetime.timedelta(days= n_day)
+    cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
+    if day_price_info.has_key(cal_date_str): #only calculate when there is history data
+        price_n_day = day_price_info[cal_date_str]
+        proc = (float(price[N_DAY_CLOSE]) - float(price_n_day[N_DAY_CLOSE])) / float(price_n_day[N_DAY_CLOSE])
+    return proc
+ 
 def calculate_fast_k_d(day_price_info,date_str,n_day):
    price = day_price_info[date_str]
    #100 * [( C - L (n) ) / ( H (n) – L (n) )] . Use the data in same day as initial value
@@ -151,7 +224,7 @@ def generate_day_price_info(currency_pair,input_csv,output_csv):
     with open(output_csv,'w') as f:
         day_price_info = {}
         for key in sorted(input_price_h1.keys()):
-            data = [0] *8
+            data = [0] *MAXIMUM_COLUMN
             data[N_DATE] = key #date
             data[N_CURRENCY_PAIR] = currency_pair # currency_pair
             data[N_PREDICTION_ACTION] = 'hold' #next_day_prediction_action
@@ -174,6 +247,7 @@ def generate_day_price_info(currency_pair,input_csv,output_csv):
             data[N_DAY_HIGH] = day_high
             data[N_DAY_LOW] = day_low
             data[N_DAY_AVG] = day_avg
+            data[N_VOLUME] = day_volume_total
             day_price_info[key] = data
             f.write(str(data).strip('[]')+ '\n')
 
@@ -206,7 +280,7 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  line = line[:-2] #remove return line character
                  line =line.translate(None,"\'")
                  m_list = line.split(',')
-                 m_list +=([0]*30) #expand column to add more indicators
+                 #m_list +=([0]*30) #expand column to add more indicators
                  key = m_list[N_DATE]
 
                  #Calculate Momentum and ROC 
@@ -247,7 +321,8 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  if 'JPY' in currency_pair:
                      pip_unit = 100
                  m_list[N_PREDICTION_ACTION] = calculate_pridiction_action_next_day(source_day_price_info,key,pip_unit)
-        
+                 m_list[N_PIP] = (float(m_list[N_DAY_CLOSE]) - float(m_list[N_DAY_OPEN]) ) * float(pip_unit)
+
                  #FAST_K & FAST_D
                  (fast_k_3day,fast_d_3day) = calculate_fast_k_d(source_day_price_info,key,3)
                  (fast_k_4day,fast_d_4day) = calculate_fast_k_d(source_day_price_info,key,4)
@@ -267,6 +342,25 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  m_list[N_FAST_D_9]= fast_d_9day
                  m_list[N_FAST_K_10]= fast_k_10day
                  m_list[N_FAST_D_10]= fast_d_10day
+
+                 #PROC 12/13/14/15 days
+                 m_list[N_PROC_12] = calculate_proc(source_day_price_info,key,12)
+                 m_list[N_PROC_13] = calculate_proc(source_day_price_info,key,13)
+                 m_list[N_PROC_14] = calculate_proc(source_day_price_info,key,14)
+                 m_list[N_PROC_15] = calculate_proc(source_day_price_info,key,15)
+                 #Weighted Close Price
+                 m_list[N_WEIGHTED_CLOSE_PRICE] = (float(m_list[N_DAY_CLOSE])*2.0 + float(m_list[N_DAY_HIGH]) + float(m_list[N_DAY_LOW]))/4.0
+      
+                 #WILLIAM_A_D
+                 m_list[N_WILLIAM_A_D] = calculate_william_a_d(source_day_price_info,key)
+
+                 #ADOSC
+                 m_list[N_ADOSC_1] = calculate_adosc(source_day_price_info,key,0)
+                 m_list[N_ADOSC_2] = calculate_adosc(source_day_price_info,key,1)
+                 m_list[N_ADOSC_3] = calculate_adosc(source_day_price_info,key,2)
+                 m_list[N_ADOSC_4] = calculate_adosc(source_day_price_info,key,3)
+                 m_list[N_ADOSC_5] = calculate_adosc(source_day_price_info,key,4)
+ 
                  update_day_price_info[key] = m_list
 
          #write updated info into the csv file
