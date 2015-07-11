@@ -70,20 +70,50 @@ N_ADOSC_3 = 40
 N_ADOSC_4 = 41
 N_ADOSC_5 = 42
 
+N_EMA_12 =43
+N_EMA_26 =44
+N_MACD =45
+
 
 
 N_PIP = 91
-N_VOLUME = 92
+N_PIP_NEXT_DAY = 92
+N_VOLUME = 93
 
 
 MAXIMUM_COLUMN = 100
 
+def calculate_ema(day_price_info,date_str,n_day):
+    EMA_COL_NUM = N_EMA_12
+    if n_day !=12 and n_day!=26:
+        print("Wrong ema parameter!")
+        return 0.0
+    if n_day == 12:
+        EMA_COL_NUM = N_EMA_12
+    elif n_day == 26:
+        EMA_COL_NUM = N_EMA_26
+
+    ema = 0.0
+    keys_sorted = sorted(day_price_info.keys()) 
+    date_order = keys_sorted.index(date_str)
+
+    if date_order < n_day: #For 12/26 day EMA, the first 12/26 days are just the average of close price
+       n_value =0.0
+       for date in keys_sorted[:date_order+1]:
+           n_value += float(day_price_info[date][N_DAY_CLOSE])
+       ema = n_value / (date_order+1) 
+    else:
+        yesterday_date = keys_sorted[date_order-1]
+        ema = float(day_price_info[yesterday_date][N_DAY_CLOSE]) * (2.0/(n_day +1.0)) + float(day_price_info[yesterday_date][EMA_COL_NUM]) *(1-(2.0/(n_day+1.0)))
+
+    return ema
+
 def calculate_adosc(day_price_info,date_str,n_day):
     adosc = 0
-    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
-    cal_date = current_date - datetime.timedelta(days= n_day)
-    cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
-    if day_price_info.has_key(cal_date_str): #only calculate when there is history data
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    if date_order  > n_day -1: 
+        cal_date_str = keys_sorted[date_order - n_day]
         price = day_price_info[cal_date_str]
         day_close = float(price[N_DAY_CLOSE])
         day_high = float(price[N_DAY_HIGH])
@@ -95,10 +125,10 @@ def calculate_adosc(day_price_info,date_str,n_day):
 def calculate_day_a_d(day_price_info,date_str):
     day_a_d = 0.0
     price = day_price_info[date_str]
-    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
-    cal_date = current_date - datetime.timedelta(days= 1)
-    cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
-    if day_price_info.has_key(cal_date_str): #only calculate when there is history data
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    if date_order  > 1 - 1:
+        cal_date_str = keys_sorted[date_order - 1]
         price_yesterday = day_price_info[cal_date_str]
         true_high = max(float(price[N_DAY_HIGH]), float(price_yesterday[N_DAY_HIGH]))
         true_low =  min(float(price[N_DAY_LOW]), float(price_yesterday[N_DAY_LOW]))
@@ -113,10 +143,10 @@ def calculate_day_a_d(day_price_info,date_str):
     return day_a_d
 
 def calculate_william_a_d(day_price_info,date_str):
-    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
-    yesterday_date = current_date - datetime.timedelta(days= 1)
-    yesterday_date_str = datetime.date.strftime(yesterday_date,'%Y-%m-%d')
-    if day_price_info.has_key(yesterday_date_str): #only calculate when there is history data
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    if date_order  > 1 -1:
+        yesterday_date_str = keys_sorted[date_order - 1]
         william_a_d = calculate_day_a_d(day_price_info,date_str) + calculate_day_a_d(day_price_info,yesterday_date_str)
     else:
         william_a_d = calculate_day_a_d(day_price_info,date_str)
@@ -125,10 +155,10 @@ def calculate_william_a_d(day_price_info,date_str):
 def calculate_proc(day_price_info,date_str,n_day):
     proc = 0.0
     price = day_price_info[date_str]
-    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
-    cal_date = current_date - datetime.timedelta(days= n_day)
-    cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
-    if day_price_info.has_key(cal_date_str): #only calculate when there is history data
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    if date_order  > n_day -1:
+        cal_date_str = keys_sorted[date_order - n_day]
         price_n_day = day_price_info[cal_date_str]
         proc = (float(price[N_DAY_CLOSE]) - float(price_n_day[N_DAY_CLOSE])) / float(price_n_day[N_DAY_CLOSE])
     return proc
@@ -138,23 +168,22 @@ def calculate_fast_k_d(day_price_info,date_str,n_day):
    #100 * [( C - L (n) ) / ( H (n) – L (n) )] . Use the data in same day as initial value
    fast_k = 100.0 * (float(price[4]) - float(price[6])) /(float(price[5]) - float(price[6]) + AVOID_ZERO_DIVISION)   
    fast_d = fast_k
-   current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
 
    #calculate fast_k
-   cal_date = current_date - datetime.timedelta(days= n_day)
-   cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
-   if day_price_info.has_key(cal_date_str): #only calculate when there is history data
+   keys_sorted = sorted(day_price_info.keys())
+   date_order = keys_sorted.index(date_str)
+   if date_order  > n_day -1:
+       cal_date_str = keys_sorted[date_order - n_day]
        price_n_day = day_price_info[cal_date_str]
        #100 * [( C – L (n) ) / ( H (n) – L (n) )]
        fast_k = 100.0 * (float(price[4]) - float(price_n_day[6])) /(float(price_n_day[5]) - float(price_n_day[6]) + AVOID_ZERO_DIVISION)
        fast_d = fast_k
 
    #calculate fast_d  (3-period average of fask_k) 
-   cal_date_1 = current_date - datetime.timedelta(days= n_day +1) #one day before
-   cal_date_str_1 = datetime.date.strftime(cal_date_1,'%Y-%m-%d')
-   cal_date_2 = current_date - datetime.timedelta(days= n_day +2) # two day before
-   cal_date_str_2 = datetime.date.strftime(cal_date_2,'%Y-%m-%d')
-   if day_price_info.has_key(cal_date_str) and day_price_info.has_key(cal_date_str_1) and day_price_info.has_key(cal_date_str_2): #only calculate when there is history data
+   if date_order  > n_day+2 -1 :
+       cal_date_str = keys_sorted[date_order - n_day]
+       cal_date_str_1 = keys_sorted[date_order - n_day +1]
+       cal_date_str_2 = keys_sorted[date_order - n_day + 2]
        price_n_day = day_price_info[cal_date_str]
        price_n_day_1 = day_price_info[cal_date_str_1]
        price_n_day_2 = day_price_info[cal_date_str_2]
@@ -168,17 +197,18 @@ def calculate_fast_k_d(day_price_info,date_str,n_day):
 
 def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 10000):
     action = 'hold'
-    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
-    cal_date = current_date + datetime.timedelta(days= 1)
-    cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
-    if day_price_info.has_key(cal_date_str): #only calculate when there is feature data
+    pips = 0.0
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    if date_order  < len(keys_sorted) -1:
+        cal_date_str = keys_sorted[date_order +1]
         pips = (float(day_price_info[cal_date_str][4]) - float(day_price_info[cal_date_str][3])) *pip_unit # (day_close - day_open ) for the next day
         #print(pips)
         if int(pips) > MINMUM_PIP: #Buy
             action = 'buy'
         elif int(pips) < -1 * MINMUM_PIP: #Sell
             action ='sell'
-    return action
+    return pips,action
 
 def calculate_Momentum_roc(day_price_info,date_str,n_day):
     momentum =0.0
@@ -320,7 +350,7 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  pip_unit = 10000
                  if 'JPY' in currency_pair:
                      pip_unit = 100
-                 m_list[N_PREDICTION_ACTION] = calculate_pridiction_action_next_day(source_day_price_info,key,pip_unit)
+                 (m_list[N_PIP_NEXT_DAY],m_list[N_PREDICTION_ACTION]) = calculate_pridiction_action_next_day(source_day_price_info,key,pip_unit)
                  m_list[N_PIP] = (float(m_list[N_DAY_CLOSE]) - float(m_list[N_DAY_OPEN]) ) * float(pip_unit)
 
                  #FAST_K & FAST_D
@@ -360,6 +390,8 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  m_list[N_ADOSC_3] = calculate_adosc(source_day_price_info,key,2)
                  m_list[N_ADOSC_4] = calculate_adosc(source_day_price_info,key,3)
                  m_list[N_ADOSC_5] = calculate_adosc(source_day_price_info,key,4)
+
+                 m_list[N_EMA_12] = calculate_ema(source_day_price_info,key,12)
  
                  update_day_price_info[key] = m_list
 
