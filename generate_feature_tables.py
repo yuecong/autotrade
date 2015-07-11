@@ -213,17 +213,12 @@ def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 1000
 def calculate_Momentum_roc(day_price_info,date_str,n_day):
     momentum =0.0
     roc =0.0
-    #print(date_str)
-    current_date = datetime.datetime.strptime(date_str,'%Y-%m-%d')
-    cal_date = current_date -datetime.timedelta(days= n_day)
-    #print(cal_date)
-    cal_date_str = datetime.date.strftime(cal_date,'%Y-%m-%d')
-    #print(cal_date_str)
-    if day_price_info.has_key(cal_date_str): #only calculate when there is history data
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    if date_order  > n_day -1:
+        cal_date_str = keys_sorted[date_order - n_day]
         momentum = float(day_price_info[date_str][4]) - float(day_price_info[cal_date_str][4])  # day_close - n_day_close
         roc = (float(day_price_info[date_str][4]) - float(day_price_info[cal_date_str][4])) /float(day_price_info[cal_date_str][4]) #(day_close - n_day_close)/ n_day_close
-    #print(momentum)
-    #print(roc)
     return momentum,roc
 
 def generate_day_price_info(currency_pair,input_csv,output_csv):
@@ -392,7 +387,8 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  m_list[N_ADOSC_5] = calculate_adosc(source_day_price_info,key,4)
 
                  m_list[N_EMA_12] = calculate_ema(source_day_price_info,key,12)
- 
+                 m_list[N_EMA_26] = calculate_ema(source_day_price_info,key,26)
+                 m_list[N_MACD] = m_list[N_EMA_12] - m_list[N_EMA_26]  
                  update_day_price_info[key] = m_list
 
          #write updated info into the csv file
