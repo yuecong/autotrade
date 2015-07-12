@@ -74,6 +74,8 @@ N_EMA_12 =43
 N_EMA_26 =44
 N_MACD =45
 N_CCI =46
+N_BOLLINGER_BANDS_LOW = 47
+N_BOLLINGER_BANDS_HIGH = 48
 
 
 N_PIP = 91
@@ -82,6 +84,29 @@ N_VOLUME = 93
 
 
 MAXIMUM_COLUMN = 100
+
+def calculate_Bollinger_Bands(day_price_info,date_str):
+    bb_low = float(day_price_info[date_str][N_DAY_LOW]) #Use low/high value as the initial value for Bollinger_Bands 
+    bb_high = float(day_price_info[date_str][N_DAY_HIGH]) #Use low/high value as the initial value for Bollinger_Bands 
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    if date_order >= 20 -1: #At least need 20-day period to calculate cci
+        #20 day simple moving average
+        sma_total = 0.0 #20-day Simple moving average in total     
+        for key in keys_sorted[date_order -19:date_order+1]:
+            price = day_price_info[key]
+            sma_total += float(price[N_DAY_CLOSE])
+        sma = sma_total /20.0
+        #20 day standard deviation
+        std_dev_total = 0.0
+        for key in keys_sorted[date_order -19:date_order+1]:
+            price = day_price_info[key]
+            std_dev_total += abs(sma - float(price[N_DAY_CLOSE]) )
+        std_dev = std_dev_total /20.0
+        bb_low = sma - std_dev*2
+        bb_high = sma + std_dev*2
+    return bb_low,bb_high
+
 
 def calculate_cci(day_price_info,date_str):
     cci = 0.0
@@ -413,6 +438,10 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
 
                  #CCI
                  m_list[N_CCI] = calculate_cci(source_day_price_info,key)
+
+                 #Bollinger Bands
+                 (m_list[N_BOLLINGER_BANDS_LOW] , m_list[N_BOLLINGER_BANDS_HIGH]) = calculate_Bollinger_Bands(source_day_price_info,key)
+
                  update_day_price_info[key] = m_list
          
          #write updated info into the csv file
