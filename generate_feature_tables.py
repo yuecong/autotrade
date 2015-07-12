@@ -73,7 +73,7 @@ N_ADOSC_5 = 42
 N_EMA_12 =43
 N_EMA_26 =44
 N_MACD =45
-
+N_CCI =46
 
 
 N_PIP = 91
@@ -82,6 +82,26 @@ N_VOLUME = 93
 
 
 MAXIMUM_COLUMN = 100
+
+def calculate_cci(day_price_info,date_str):
+    cci = 0.0
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    if date_order >= 20 -1: #At least need 20-day period to calculate cci
+        smatp_total = 0.0 #Simple Moving Average of the Typical Price in total
+        for key in keys_sorted[date_order -19:date_order+1]:
+            price = day_price_info[key]
+            smatp_total += (float(price[N_DAY_HIGH]) + float(price[N_DAY_LOW]) + float(price[N_DAY_CLOSE]) )/3.0        
+        smatp = smatp_total /20.0
+        mean_deviation_in_total = 0.0
+        for key in keys_sorted[date_order -19:date_order+1]:
+            price = day_price_info[key]
+            mean_deviation_in_total += abs(smatp -((float(price[N_DAY_HIGH]) + float(price[N_DAY_LOW]) + float(price[N_DAY_CLOSE]) )/3.0) )
+        mean_deviation = mean_deviation_in_total /20.0
+        price = day_price_info[date_str]
+        typical_price = (float(price[N_DAY_HIGH]) + float(price[N_DAY_LOW]) + float(price[N_DAY_CLOSE]) )/3.0 
+        cci = (typical_price - smatp)/ (0.015 * mean_deviation)
+    return cci
 
 def calculate_ema(day_price_info,date_str,n_day):
     EMA_COL_NUM = N_EMA_12
@@ -386,11 +406,15 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  m_list[N_ADOSC_4] = calculate_adosc(source_day_price_info,key,3)
                  m_list[N_ADOSC_5] = calculate_adosc(source_day_price_info,key,4)
 
+                 #MACD
                  m_list[N_EMA_12] = calculate_ema(source_day_price_info,key,12)
                  m_list[N_EMA_26] = calculate_ema(source_day_price_info,key,26)
                  m_list[N_MACD] = m_list[N_EMA_12] - m_list[N_EMA_26]  
-                 update_day_price_info[key] = m_list
 
+                 #CCI
+                 m_list[N_CCI] = calculate_cci(source_day_price_info,key)
+                 update_day_price_info[key] = m_list
+         
          #write updated info into the csv file
          with open(update_csv,'w') as f:
              for key in sorted(update_day_price_info.keys()):
