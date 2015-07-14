@@ -76,6 +76,10 @@ N_MACD =45
 N_CCI =46
 N_BOLLINGER_BANDS_LOW = 47
 N_BOLLINGER_BANDS_HIGH = 48
+N_HEIKIN_ASHI_XCLOSE = 49
+N_HEIKIN_ASHI_XOPEN = 50
+N_HEIKIN_ASHI_XHIGH = 51
+N_HEIKIN_ASHI_XLOW = 52
 
 
 N_PIP = 91
@@ -84,6 +88,22 @@ N_VOLUME = 93
 
 
 MAXIMUM_COLUMN = 100
+
+def calculate_heikin_ashi(day_price_info,date_str):
+    price = day_price_info[date_str]
+    xclose = (float(price[N_DAY_CLOSE]) + float(price[N_DAY_OPEN]) + float(price[N_DAY_HIGH]) + float(price[N_DAY_LOW]) ) /4.0
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    if date_order >0:
+        last_price = day_price_info[keys_sorted[date_order -1]]
+        xopen = ( float(last_price[N_DAY_OPEN]) + float(last_price[N_DAY_CLOSE])) /2.0
+    else:
+        xopen = ( float(price[N_DAY_OPEN]) + float(price[N_DAY_CLOSE])) /2.0
+    xhigh = max( float(price[N_DAY_HIGH]), xclose, xopen)
+    xlow = min( float(price[N_DAY_LOW]), xclose, xopen)
+    return xclose, xopen, xhigh, xlow
+
+
 
 def calculate_Bollinger_Bands(day_price_info,date_str):
     bb_low = float(day_price_info[date_str][N_DAY_LOW]) #Use low/high value as the initial value for Bollinger_Bands 
@@ -441,6 +461,10 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
 
                  #Bollinger Bands
                  (m_list[N_BOLLINGER_BANDS_LOW] , m_list[N_BOLLINGER_BANDS_HIGH]) = calculate_Bollinger_Bands(source_day_price_info,key)
+
+                 #Heikin-Ashi
+                 (m_list[N_HEIKIN_ASHI_XCLOSE],m_list[N_HEIKIN_ASHI_XOPEN],m_list[N_HEIKIN_ASHI_XHIGH],m_list[N_HEIKIN_ASHI_XLOW]) = calculate_heikin_ashi(source_day_price_info,key)
+
 
                  update_day_price_info[key] = m_list
          
