@@ -80,14 +80,41 @@ N_HEIKIN_ASHI_XCLOSE = 49
 N_HEIKIN_ASHI_XOPEN = 50
 N_HEIKIN_ASHI_XHIGH = 51
 N_HEIKIN_ASHI_XLOW = 52
+N_2DAY_HIGH = 53
+N_2DAY_LOW =54
+N_DAY_HIGH_LOW_AVG =55
+N_2DAY_HIGH_LOW_AVG =56
+
+N_DAY_HIGH_SLOPE_3 = 57
+N_DAY_HIGH_SLOPE_4 = 58
+N_DAY_HIGH_SLOPE_5 = 59
+N_DAY_HIGH_SLOPE_8 = 60
+N_DAY_HIGH_SLOPE_10= 61
+N_DAY_HIGH_SLOPE_12 = 62
+N_DAY_HIGH_SLOPE_15= 63
+N_DAY_HIGH_SLOPE_20 = 64
+N_DAY_HIGH_SLOPE_25 = 65
+N_DAY_HIGH_SLOPE_30 = 66
+
+N_PIP = 67
+N_PIP_NEXT_DAY = 68
+N_VOLUME = 69
 
 
-N_PIP = 91
-N_PIP_NEXT_DAY = 92
-N_VOLUME = 93
+MAXIMUM_COLUMN = 70
 
-
-MAXIMUM_COLUMN = 100
+def calculate_2day_high_low(day_price_info,date_str):
+    price = day_price_info[date_str]
+    last_price = price
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    if date_order >0:
+        last_price = day_price_info[keys_sorted[date_order -1]]
+    high_2day = max( float(price[N_DAY_HIGH]), float(last_price[N_DAY_HIGH]) )
+    low_2day  = min (float(price[N_DAY_LOW]) , float(last_price[N_DAY_LOW]) )
+    high_low_avg = ( float(price[N_DAY_HIGH]) + float(price[N_DAY_LOW]) /2.0)
+    high_low_avg_2day = ( float(price[N_DAY_HIGH]) + float(price[N_DAY_LOW]) +  float(last_price[N_DAY_HIGH]) + float(last_price[N_DAY_LOW]) ) /4.0
+    return high_2day, low_2day, high_low_avg, high_low_avg_2day
 
 def calculate_heikin_ashi(day_price_info,date_str):
     price = day_price_info[date_str]
@@ -465,6 +492,10 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  #Heikin-Ashi
                  (m_list[N_HEIKIN_ASHI_XCLOSE],m_list[N_HEIKIN_ASHI_XOPEN],m_list[N_HEIKIN_ASHI_XHIGH],m_list[N_HEIKIN_ASHI_XLOW]) = calculate_heikin_ashi(source_day_price_info,key)
 
+                 # 2day high, 2day low, high/low average, 2day high/low average
+                 (m_list[N_2DAY_HIGH],m_list[N_2DAY_LOW], m_list[N_DAY_HIGH_LOW_AVG], m_list[N_2DAY_HIGH_LOW_AVG]) = calculate_2day_high_low(source_day_price_info,key)
+
+                 #high price slope (3/4/5/8/10/12/15/20/25/30 days)
 
                  update_day_price_info[key] = m_list
          
