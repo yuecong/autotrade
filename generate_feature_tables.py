@@ -110,12 +110,11 @@ CSV_HEADER = ("Date,Currency_pair,Prediction_action,"
               "EMA_12Day,EMA_26Day,MACD,"
               "CCI,BOLLINGER_BANDS_LOW,BOLLINGER_BANDS_HIGH,"
               "HEIKIN_ASHI_XCLOSE,HEIKIN_ASHI_XOPEN,HEIKIN_ASHI_XHIGH,HEIKIN_ASHI_XLOW,"
-              "2DAY_HIGH,2DAY_LOW,1DAY_HIGH_LOW_AVG,2DAY_HIGH_LOW_AVG"
+              "2DAY_HIGH,2DAY_LOW,1DAY_HIGH_LOW_AVG,2DAY_HIGH_LOW_AVG,"
               "High_slope_3day,High_slope_4day,High_slope_5day,High_slope_8day,High_slope_10day,"
               "High_slope_12day,High_slope_15day,High_slope_20day,High_slope_25day,High_slope_30day,"
               "Pips,Prediction_Pips,Volume"
              ) 
-
 
 def calculate_high_slope(day_price_info,date_str,n_day):
     keys_sorted = sorted(day_price_info.keys())
@@ -594,7 +593,7 @@ def merge_all_feature_tables(currency_pair):
     source_file_list = sorted(glob.glob("price_%s_*_D1.csv" % currency_pair))
     meger_file_name = 'price_%s_D1_merge.csv' % currency_pair
     with open(meger_file_name,'w') as merge_f:
-        merge_f.write(CSV_HEADER)
+        merge_f.write(CSV_HEADER + '¥n')
     for source_file in source_file_list:
         with open(source_file,'r') as source_f:
             lines = source_f.readlines()
