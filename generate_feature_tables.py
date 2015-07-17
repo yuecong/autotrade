@@ -593,7 +593,7 @@ def merge_all_feature_tables(currency_pair):
     source_file_list = sorted(glob.glob("price_%s_*_D1.csv" % currency_pair))
     meger_file_name = 'price_%s_D1_merge.csv' % currency_pair
     with open(meger_file_name,'w') as merge_f:
-        merge_f.write(CSV_HEADER + '¥n')
+        merge_f.write(CSV_HEADER + '\n')
     for source_file in source_file_list:
         with open(source_file,'r') as source_f:
             lines = source_f.readlines()
