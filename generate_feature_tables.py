@@ -2,6 +2,7 @@
 from __future__ import print_function
 import logging
 import datetime
+import glob
 
 log = logging.getLogger(__name__)
 print = log.info
@@ -69,7 +70,6 @@ N_ADOSC_2 = 39
 N_ADOSC_3 = 40
 N_ADOSC_4 = 41
 N_ADOSC_5 = 42
-
 N_EMA_12 =43
 N_EMA_26 =44
 N_MACD =45
@@ -84,7 +84,6 @@ N_2DAY_HIGH = 53
 N_2DAY_LOW =54
 N_DAY_HIGH_LOW_AVG =55
 N_2DAY_HIGH_LOW_AVG =56
-
 N_DAY_HIGH_SLOPE_3 = 57
 N_DAY_HIGH_SLOPE_4 = 58
 N_DAY_HIGH_SLOPE_5 = 59
@@ -95,13 +94,28 @@ N_DAY_HIGH_SLOPE_15= 63
 N_DAY_HIGH_SLOPE_20 = 64
 N_DAY_HIGH_SLOPE_25 = 65
 N_DAY_HIGH_SLOPE_30 = 66
-
 N_PIP = 67
 N_PIP_NEXT_DAY = 68
 N_VOLUME = 69
-
-
 MAXIMUM_COLUMN = 70
+CSV_HEADER = ("Date,Currency_pair,Prediction_action,"
+              "Day Open,Day Close,Day High,Day Low,Day Average,"
+              "Momentum_3day,Momentum_4day,Momentum_5day,Momentum_8day,Momentum_9day,Momentum_10day,"
+              "Roc_3day,Roc_4day,Roc_5day,Roc_8day,Roc_9day,Roc_10day,"
+              "Fast_k_3day,Fast_d_3day,Fast_k_4day,Fast_d_4day,Fast_k_5day,Fast_d_5day,Fast_k_8day,Fast_d_8day,"
+              "Fast_k_9day,Fast_d_9day,Fast_k_10day,Fast_d_10day,"
+              "PROC_12day,PROC_13day,PROC_14day,PROC_15day,"
+              "Weighted_Close_Price,WILLIAM_A_D,"
+              "ADOSC_1day,ADOSC_2day,ADOSC_3day,ADOSC_4day,ADOSC_5day,"
+              "EMA_12Day,EMA_26Day,MACD,"
+              "CCI,BOLLINGER_BANDS_LOW,BOLLINGER_BANDS_HIGH,"
+              "HEIKIN_ASHI_XCLOSE,HEIKIN_ASHI_XOPEN,HEIKIN_ASHI_XHIGH,HEIKIN_ASHI_XLOW,"
+              "2DAY_HIGH,2DAY_LOW,1DAY_HIGH_LOW_AVG,2DAY_HIGH_LOW_AVG"
+              "High_slope_3day,High_slope_4day,High_slope_5day,High_slope_8day,High_slope_10day,"
+              "High_slope_12day,High_slope_15day,High_slope_20day,High_slope_25day,High_slope_30day,"
+              "Pips,Prediction_Pips,Volume"
+             ) 
+
 
 def calculate_high_slope(day_price_info,date_str,n_day):
     keys_sorted = sorted(day_price_info.keys())
@@ -524,7 +538,8 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  f.write(str(update_day_price_info[key]).strip('[]')+ '\n')
              f.truncate()
 
-if __name__ == '__main__':
+    
+def generate_seperate_feature_tables():
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2012-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2012-01-01_D1.csv")
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2012-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2012-07-01_D1.csv")
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2013-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2013-01-01_D1.csv")
@@ -574,4 +589,20 @@ if __name__ == '__main__':
                           'price_USD_JPY_2014-07-01_D1.csv',
                           'price_USD_JPY_2015-01-01_D1.csv',
                           ],'USD_JPY')
+
+def merge_all_feature_tables(currency_pair):
+    source_file_list = sorted(glob.glob("price_%s_*_D1.csv" % currency_pair))
+    meger_file_name = 'price_%s_D1_merge.csv' % currency_pair
+    with open(meger_file_name,'w') as merge_f:
+        merge_f.write(CSV_HEADER)
+    for source_file in source_file_list:
+        with open(source_file,'r') as source_f:
+            lines = source_f.readlines()
+            with open(meger_file_name,'a') as merge_f:
+                merge_f.writelines(lines)
+
+if __name__ == '__main__':
+    #generate_seperate_feature_tables()
+    merge_all_feature_tables('EUR_USD')
+    merge_all_feature_tables('USD_JPY')
 
