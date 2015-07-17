@@ -103,6 +103,16 @@ N_VOLUME = 69
 
 MAXIMUM_COLUMN = 70
 
+def calculate_high_slope(day_price_info,date_str,n_day):
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    start_date_order = max(date_order - n_day,0)
+    current_price = day_price_info[date_str]
+    start_price = day_price_info[keys_sorted[start_date_order]]
+    slope =( float(current_price[N_DAY_HIGH]) - float(start_price[N_DAY_HIGH]) ) / float(1+ date_order - start_date_order)
+    return slope
+
+
 def calculate_2day_high_low(day_price_info,date_str):
     price = day_price_info[date_str]
     last_price = price
@@ -496,7 +506,16 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  (m_list[N_2DAY_HIGH],m_list[N_2DAY_LOW], m_list[N_DAY_HIGH_LOW_AVG], m_list[N_2DAY_HIGH_LOW_AVG]) = calculate_2day_high_low(source_day_price_info,key)
 
                  #high price slope (3/4/5/8/10/12/15/20/25/30 days)
-
+                 m_list[N_DAY_HIGH_SLOPE_3] = calculate_high_slope(source_day_price_info,key,3)
+                 m_list[N_DAY_HIGH_SLOPE_4] = calculate_high_slope(source_day_price_info,key,4)
+                 m_list[N_DAY_HIGH_SLOPE_5] = calculate_high_slope(source_day_price_info,key,5)
+                 m_list[N_DAY_HIGH_SLOPE_8] = calculate_high_slope(source_day_price_info,key,8)
+                 m_list[N_DAY_HIGH_SLOPE_10] = calculate_high_slope(source_day_price_info,key,10)
+                 m_list[N_DAY_HIGH_SLOPE_12] = calculate_high_slope(source_day_price_info,key,12)
+                 m_list[N_DAY_HIGH_SLOPE_15] = calculate_high_slope(source_day_price_info,key,15)
+                 m_list[N_DAY_HIGH_SLOPE_20] = calculate_high_slope(source_day_price_info,key,20)
+                 m_list[N_DAY_HIGH_SLOPE_25] = calculate_high_slope(source_day_price_info,key,25)
+                 m_list[N_DAY_HIGH_SLOPE_30] = calculate_high_slope(source_day_price_info,key,30)
                  update_day_price_info[key] = m_list
          
          #write updated info into the csv file
