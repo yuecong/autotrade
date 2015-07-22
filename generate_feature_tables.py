@@ -121,8 +121,9 @@ def calculate_high_slope(day_price_info,date_str,n_day):
     date_order = keys_sorted.index(date_str)
     start_date_order = max(date_order - n_day,0)
     current_price = day_price_info[date_str]
+    slope_adjust_factor = 1000.0
     start_price = day_price_info[keys_sorted[start_date_order]]
-    slope =( float(current_price[N_DAY_HIGH]) - float(start_price[N_DAY_HIGH]) ) / float(1+ date_order - start_date_order)
+    slope =( float(current_price[N_DAY_HIGH]) - float(start_price[N_DAY_HIGH]) ) / float(1+ date_order - start_date_order)*slope_adjust_factor
     return slope
 
 
@@ -530,11 +531,34 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  m_list[N_DAY_HIGH_SLOPE_25] = calculate_high_slope(source_day_price_info,key,25)
                  m_list[N_DAY_HIGH_SLOPE_30] = calculate_high_slope(source_day_price_info,key,30)
                  update_day_price_info[key] = m_list
-         
+                 
          #write updated info into the csv file
          with open(update_csv,'w') as f:
              for key in sorted(update_day_price_info.keys()):
-                 f.write(str(update_day_price_info[key]).strip('[]')+ '\n')
+                line = update_day_price_info[key]
+                avail_fraction_str = '%.5f'
+                if 'JPY' in line[N_CURRENCY_PAIR]: avail_fraction_str ='%.2f'
+                line_str =''
+                for i in range(0,len(line)): # format each element
+                    each_element_str = str(line[i])
+                    if i>= N_DAY_OPEN and i<=N_MOMENTUM_10: each_element_str = avail_fraction_str %float(line[i])
+                    if i>=N_ROC_3 and i<=N_ROC_10: each_element_str = '%.2f' %float(line[i])
+                    if i>=N_FAST_K_3 and i<=N_FAST_D_10: each_element_str = '%d' %int(line[i])
+                    if i>=N_PROC_12 and i<=N_PROC_15: each_element_str = '%.2f' %float(line[i])
+                    if i>=N_WEIGHTED_CLOSE_PRICE and i<=N_WILLIAM_A_D: each_element_str = avail_fraction_str %float(line[i])
+                    if i>=N_ADOSC_1 and i<=N_ADOSC_5: each_element_str = '%d' %int(line[i])
+                    if i>=N_EMA_12 and i<=N_MACD: each_element_str = avail_fraction_str %float(line[i])
+                    if i==N_CCI : each_element_str = '%.2f' %float(line[i])
+                    if i>=N_BOLLINGER_BANDS_LOW and i<=N_2DAY_HIGH_LOW_AVG: each_element_str = avail_fraction_str %float(line[i])
+                    if i>=N_DAY_HIGH_SLOPE_3 and i<=N_DAY_HIGH_SLOPE_30: each_element_str = '%.4f' %float(line[i])
+                    if i>=N_PIP and i<=N_PIP_NEXT_DAY: ach_element_str = '%.1f' %float(line[i])
+                    if i==N_VOLUME: each_element_str = '%d' %int(float(line[i]))
+                    if i <  len(line) -1 : end_str = ','
+                    else: end_str = '\n'
+                    each_element_str +=end_str
+                    line_str +=each_element_str
+                f.write(line_str)
+                #print(line_str)
              f.truncate()
 
     
@@ -601,7 +625,7 @@ def merge_all_feature_tables(currency_pair):
                 merge_f.writelines(lines)
 
 if __name__ == '__main__':
-    #generate_seperate_feature_tables()
+    generate_seperate_feature_tables()
     merge_all_feature_tables('EUR_USD')
     merge_all_feature_tables('USD_JPY')
 
