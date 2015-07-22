@@ -538,6 +538,7 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                 line = update_day_price_info[key]
                 avail_fraction_str = '%.5f'
                 if 'JPY' in line[N_CURRENCY_PAIR]: avail_fraction_str ='%.2f'
+
                 line_str =''
                 for i in range(0,len(line)): # format each element
                     each_element_str = str(line[i])
@@ -551,8 +552,9 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                     if i==N_CCI : each_element_str = '%.2f' %float(line[i])
                     if i>=N_BOLLINGER_BANDS_LOW and i<=N_2DAY_HIGH_LOW_AVG: each_element_str = avail_fraction_str %float(line[i])
                     if i>=N_DAY_HIGH_SLOPE_3 and i<=N_DAY_HIGH_SLOPE_30: each_element_str = '%.4f' %float(line[i])
-                    if i>=N_PIP and i<=N_PIP_NEXT_DAY: ach_element_str = '%.1f' %float(line[i])
+                    if i>=N_PIP and i<=N_PIP_NEXT_DAY: each_element_str = '%.1f' %float(line[i])
                     if i==N_VOLUME: each_element_str = '%d' %int(float(line[i]))
+
                     if i <  len(line) -1 : end_str = ','
                     else: end_str = '\n'
                     each_element_str +=end_str
