@@ -568,6 +568,20 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
 
     
 def generate_seperate_feature_tables():
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2005-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2005-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2005-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2005-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2006-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2006-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2006-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2006-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2007-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2007-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2007-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2007-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2008-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2008-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2008-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2008-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2009-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2009-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2009-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2009-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2010-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2010-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2010-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2010-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2011-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2011-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2011-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2011-07-01_D1.csv")
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2012-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2012-01-01_D1.csv")
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2012-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2012-07-01_D1.csv")
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2013-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2013-01-01_D1.csv")
@@ -575,24 +589,69 @@ def generate_seperate_feature_tables():
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2014-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2014-01-01_D1.csv")
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2014-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2014-07-01_D1.csv")
     generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2015-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2015-01-01_D1.csv")
-    update_day_price_info(['price_EUR_USD_2012-01-01_D1.csv',
+    generate_day_price_info(currency_pair= 'EUR_USD',input_csv="price_EUR_USD_2015-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_EUR_USD_2015-07-01_D1.csv")
+    update_day_price_info([
+                          'price_EUR_USD_2005-01-01_D1.csv',
+                          'price_EUR_USD_2005-07-01_D1.csv',
+                          'price_EUR_USD_2006-01-01_D1.csv',
+                          'price_EUR_USD_2006-07-01_D1.csv',
+                          'price_EUR_USD_2007-01-01_D1.csv',
+                          'price_EUR_USD_2007-07-01_D1.csv',
+                          'price_EUR_USD_2008-01-01_D1.csv',
+                          'price_EUR_USD_2008-07-01_D1.csv',
+                          'price_EUR_USD_2009-01-01_D1.csv',
+                          'price_EUR_USD_2009-07-01_D1.csv',
+                          'price_EUR_USD_2010-01-01_D1.csv',
+                          'price_EUR_USD_2010-07-01_D1.csv',
+                          'price_EUR_USD_2011-01-01_D1.csv',
+                          'price_EUR_USD_2011-07-01_D1.csv',
+                          'price_EUR_USD_2012-01-01_D1.csv',
                           'price_EUR_USD_2012-07-01_D1.csv',
                           'price_EUR_USD_2013-01-01_D1.csv',
                           'price_EUR_USD_2013-07-01_D1.csv',
                           'price_EUR_USD_2014-01-01_D1.csv',
                           'price_EUR_USD_2014-07-01_D1.csv',
                           'price_EUR_USD_2015-01-01_D1.csv',
+                          'price_EUR_USD_2015-07-01_D1.csv',
                           ],
-                          ['price_EUR_USD_2012-01-01_D1.csv',
+                          [
+                          'price_EUR_USD_2005-01-01_D1.csv',
+                          'price_EUR_USD_2005-07-01_D1.csv',
+                          'price_EUR_USD_2006-01-01_D1.csv',
+                          'price_EUR_USD_2006-07-01_D1.csv',
+                          'price_EUR_USD_2007-01-01_D1.csv',
+                          'price_EUR_USD_2007-07-01_D1.csv',
+                          'price_EUR_USD_2008-01-01_D1.csv',
+                          'price_EUR_USD_2008-07-01_D1.csv',
+                          'price_EUR_USD_2009-01-01_D1.csv',
+                          'price_EUR_USD_2009-07-01_D1.csv',
+                          'price_EUR_USD_2010-01-01_D1.csv',
+                          'price_EUR_USD_2010-07-01_D1.csv',
+                          'price_EUR_USD_2011-01-01_D1.csv',
+                          'price_EUR_USD_2011-07-01_D1.csv',
+                          'price_EUR_USD_2012-01-01_D1.csv',
                           'price_EUR_USD_2012-07-01_D1.csv',
                           'price_EUR_USD_2013-01-01_D1.csv',
                           'price_EUR_USD_2013-07-01_D1.csv',
                           'price_EUR_USD_2014-01-01_D1.csv',
                           'price_EUR_USD_2014-07-01_D1.csv',
                           'price_EUR_USD_2015-01-01_D1.csv',
+                          'price_EUR_USD_2015-07-01_D1.csv',
                           ],'EUR_USD')
-
-  
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2005-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2005-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2005-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2005-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2006-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2006-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2006-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2006-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2007-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2007-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2007-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2007-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2008-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2008-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2008-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2008-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2009-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2009-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2009-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2009-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2010-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2010-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2010-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2010-07-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2011-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2011-01-01_D1.csv")
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2011-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2011-07-01_D1.csv")
     generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2012-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2012-01-01_D1.csv")
     generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2012-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2012-07-01_D1.csv")
     generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2013-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2013-01-01_D1.csv")
@@ -600,22 +659,54 @@ def generate_seperate_feature_tables():
     generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2014-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2014-01-01_D1.csv")
     generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2014-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2014-07-01_D1.csv")
     generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2015-01-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2015-01-01_D1.csv")
-
-    update_day_price_info(['price_USD_JPY_2012-01-01_D1.csv',
+    generate_day_price_info(currency_pair= 'USD_JPY',input_csv="price_USD_JPY_2015-07-01T00%3A00%3A00Z_H1.csv",output_csv="price_USD_JPY_2015-07-01_D1.csv")
+    update_day_price_info([
+                          'price_USD_JPY_2005-01-01_D1.csv',
+                          'price_USD_JPY_2005-07-01_D1.csv',
+                          'price_USD_JPY_2006-01-01_D1.csv',
+                          'price_USD_JPY_2006-07-01_D1.csv',
+                          'price_USD_JPY_2007-01-01_D1.csv',
+                          'price_USD_JPY_2007-07-01_D1.csv',
+                          'price_USD_JPY_2008-01-01_D1.csv',
+                          'price_USD_JPY_2008-07-01_D1.csv',
+                          'price_USD_JPY_2009-01-01_D1.csv',
+                          'price_USD_JPY_2009-07-01_D1.csv',
+                          'price_USD_JPY_2010-01-01_D1.csv',
+                          'price_USD_JPY_2010-07-01_D1.csv',
+                          'price_USD_JPY_2011-01-01_D1.csv',
+                          'price_USD_JPY_2011-07-01_D1.csv',
+                          'price_USD_JPY_2012-01-01_D1.csv',
                           'price_USD_JPY_2012-07-01_D1.csv',
                           'price_USD_JPY_2013-01-01_D1.csv',
                           'price_USD_JPY_2013-07-01_D1.csv',
                           'price_USD_JPY_2014-01-01_D1.csv',
                           'price_USD_JPY_2014-07-01_D1.csv',
                           'price_USD_JPY_2015-01-01_D1.csv',
+                          'price_USD_JPY_2015-07-01_D1.csv',
                           ],
-                          ['price_USD_JPY_2012-01-01_D1.csv',
+                          [
+                          'price_USD_JPY_2005-01-01_D1.csv',
+                          'price_USD_JPY_2005-07-01_D1.csv',
+                          'price_USD_JPY_2006-01-01_D1.csv',
+                          'price_USD_JPY_2006-07-01_D1.csv',
+                          'price_USD_JPY_2007-01-01_D1.csv',
+                          'price_USD_JPY_2007-07-01_D1.csv',
+                          'price_USD_JPY_2008-01-01_D1.csv',
+                          'price_USD_JPY_2008-07-01_D1.csv',
+                          'price_USD_JPY_2009-01-01_D1.csv',
+                          'price_USD_JPY_2009-07-01_D1.csv',
+                          'price_USD_JPY_2010-01-01_D1.csv',
+                          'price_USD_JPY_2010-07-01_D1.csv',
+                          'price_USD_JPY_2011-01-01_D1.csv',
+                          'price_USD_JPY_2011-07-01_D1.csv',
+                          'price_USD_JPY_2012-01-01_D1.csv',
                           'price_USD_JPY_2012-07-01_D1.csv',
                           'price_USD_JPY_2013-01-01_D1.csv',
                           'price_USD_JPY_2013-07-01_D1.csv',
                           'price_USD_JPY_2014-01-01_D1.csv',
                           'price_USD_JPY_2014-07-01_D1.csv',
                           'price_USD_JPY_2015-01-01_D1.csv',
+                          'price_USD_JPY_2015-07-01_D1.csv',
                           ],'USD_JPY')
 
 def merge_all_feature_tables(currency_pair):
