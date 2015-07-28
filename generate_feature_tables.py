@@ -8,7 +8,8 @@ log = logging.getLogger(__name__)
 print = log.info
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.basicConfig(level = logging.INFO,format = '%(asctime)s [%(levelname)s] %(message)s', datefmt = '%Y-%m-%d %H:%M:%S')
-MINMUM_PIP =5
+#MINMUM_PIP =5
+MINMUM_PIP =0
 AVOID_ZERO_DIVISION = 0.0000001
 
 #year,month,day,hour,minute,second,openBid,openAsk,highBid,highAsk,lowBid,lowAsk,closeBid,closeAsk,volume,complete
@@ -312,7 +313,7 @@ def calculate_fast_k_d(day_price_info,date_str,n_day):
 
 
 def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 10000):
-    action = 'hold'
+    action = 'buy'
     pips = 0.0
     keys_sorted = sorted(day_price_info.keys())
     date_order = keys_sorted.index(date_str)
@@ -322,8 +323,10 @@ def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 1000
         #print(pips)
         if int(pips) > MINMUM_PIP: #Buy
             action = 'buy'
-        elif int(pips) < -1 * MINMUM_PIP: #Sell
+        elif int(pips) <= -1 * MINMUM_PIP: #Sell
             action ='sell'
+        else:
+            action ='hold'
     return pips,action
 
 def calculate_Momentum_roc(day_price_info,date_str,n_day):
