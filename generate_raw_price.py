@@ -164,6 +164,28 @@ if __name__ == '__main__':
     account_info = get_account_info()
     if args.dump_price:
         print("Dumping price info into local file...")
+        #store_price_info_into_disk('EUR_USD','2001-01-01T00%3A00%3A00Z','2001-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2001
+        #store_price_info_into_disk('EUR_USD','2001-07-01T00%3A00%3A00Z','2001-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2001
+        store_price_info_into_disk('EUR_USD','2002-01-01T00%3A00%3A00Z','2002-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2002
+        store_price_info_into_disk('EUR_USD','2002-07-01T00%3A00%3A00Z','2002-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2002 
+        store_price_info_into_disk('EUR_USD','2003-01-01T00%3A00%3A00Z','2003-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2003
+        store_price_info_into_disk('EUR_USD','2003-07-01T00%3A00%3A00Z','2003-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2003 
+        store_price_info_into_disk('EUR_USD','2004-01-01T00%3A00%3A00Z','2004-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2004
+        store_price_info_into_disk('EUR_USD','2004-07-01T00%3A00%3A00Z','2004-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2004 
+        store_price_info_into_disk('EUR_USD','2005-01-01T00%3A00%3A00Z','2005-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2005
+        store_price_info_into_disk('EUR_USD','2005-07-01T00%3A00%3A00Z','2005-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2005 
+        store_price_info_into_disk('EUR_USD','2006-01-01T00%3A00%3A00Z','2006-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2006
+        store_price_info_into_disk('EUR_USD','2006-07-01T00%3A00%3A00Z','2006-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2006 
+        store_price_info_into_disk('EUR_USD','2007-01-01T00%3A00%3A00Z','2007-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2007
+        store_price_info_into_disk('EUR_USD','2007-07-01T00%3A00%3A00Z','2007-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2007
+        store_price_info_into_disk('EUR_USD','2008-01-01T00%3A00%3A00Z','2008-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2008
+        store_price_info_into_disk('EUR_USD','2008-07-01T00%3A00%3A00Z','2008-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2008
+        store_price_info_into_disk('EUR_USD','2009-01-01T00%3A00%3A00Z','2009-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2009
+        store_price_info_into_disk('EUR_USD','2009-07-01T00%3A00%3A00Z','2009-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2009 
+        store_price_info_into_disk('EUR_USD','2010-01-01T00%3A00%3A00Z','2010-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2010
+        store_price_info_into_disk('EUR_USD','2010-07-01T00%3A00%3A00Z','2010-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2010
+        store_price_info_into_disk('EUR_USD','2011-01-01T00%3A00%3A00Z','2011-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2011
+        store_price_info_into_disk('EUR_USD','2011-07-01T00%3A00%3A00Z','2011-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2011 
         store_price_info_into_disk('EUR_USD','2012-01-01T00%3A00%3A00Z','2012-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2012
         store_price_info_into_disk('EUR_USD','2012-07-01T00%3A00%3A00Z','2012-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2012 
         store_price_info_into_disk('EUR_USD','2013-01-01T00%3A00%3A00Z','2013-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2013
@@ -171,7 +193,31 @@ if __name__ == '__main__':
         store_price_info_into_disk('EUR_USD','2014-01-01T00%3A00%3A00Z','2014-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2014
         store_price_info_into_disk('EUR_USD','2014-07-01T00%3A00%3A00Z','2014-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2014 
         store_price_info_into_disk('EUR_USD','2015-01-01T00%3A00%3A00Z','2015-06-30T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the first half year of 2015
-        #store_price_info_into_disk('EUR_USD','2015-07-01T00%3A00%3A00Z','2015-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2015
+        store_price_info_into_disk('EUR_USD','2015-07-01T00%3A00%3A00Z','2015-12-31T23%3A59%3A59Z','H1') # dump H1 EUR_USD price for the second half year of 2015
+
+
+        #store_price_info_into_disk('USD_JPY','2001-01-01T00%3A00%3A00Z','2001-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2001
+        #store_price_info_into_disk('USD_JPY','2001-07-01T00%3A00%3A00Z','2001-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2001
+        store_price_info_into_disk('USD_JPY','2002-01-01T00%3A00%3A00Z','2002-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2002
+        store_price_info_into_disk('USD_JPY','2002-07-01T00%3A00%3A00Z','2002-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2002
+        store_price_info_into_disk('USD_JPY','2003-01-01T00%3A00%3A00Z','2003-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2003
+        store_price_info_into_disk('USD_JPY','2003-07-01T00%3A00%3A00Z','2003-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2003
+        store_price_info_into_disk('USD_JPY','2004-01-01T00%3A00%3A00Z','2004-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2004
+        store_price_info_into_disk('USD_JPY','2004-07-01T00%3A00%3A00Z','2004-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2004
+        store_price_info_into_disk('USD_JPY','2005-01-01T00%3A00%3A00Z','2005-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2005
+        store_price_info_into_disk('USD_JPY','2005-07-01T00%3A00%3A00Z','2005-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2005
+        store_price_info_into_disk('USD_JPY','2006-01-01T00%3A00%3A00Z','2006-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2006
+        store_price_info_into_disk('USD_JPY','2006-07-01T00%3A00%3A00Z','2006-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2006
+        store_price_info_into_disk('USD_JPY','2007-01-01T00%3A00%3A00Z','2007-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2007
+        store_price_info_into_disk('USD_JPY','2007-07-01T00%3A00%3A00Z','2007-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2007
+        store_price_info_into_disk('USD_JPY','2008-01-01T00%3A00%3A00Z','2008-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2008
+        store_price_info_into_disk('USD_JPY','2008-07-01T00%3A00%3A00Z','2008-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2008
+        store_price_info_into_disk('USD_JPY','2009-01-01T00%3A00%3A00Z','2009-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2009
+        store_price_info_into_disk('USD_JPY','2009-07-01T00%3A00%3A00Z','2009-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2009
+        store_price_info_into_disk('USD_JPY','2010-01-01T00%3A00%3A00Z','2010-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2010
+        store_price_info_into_disk('USD_JPY','2010-07-01T00%3A00%3A00Z','2010-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2010
+        store_price_info_into_disk('USD_JPY','2011-01-01T00%3A00%3A00Z','2011-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2011
+        store_price_info_into_disk('USD_JPY','2011-07-01T00%3A00%3A00Z','2011-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2011
         store_price_info_into_disk('USD_JPY','2012-01-01T00%3A00%3A00Z','2012-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2012
         store_price_info_into_disk('USD_JPY','2012-07-01T00%3A00%3A00Z','2012-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2012 
         store_price_info_into_disk('USD_JPY','2013-01-01T00%3A00%3A00Z','2013-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2013
@@ -179,24 +225,24 @@ if __name__ == '__main__':
         store_price_info_into_disk('USD_JPY','2014-01-01T00%3A00%3A00Z','2014-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2014
         store_price_info_into_disk('USD_JPY','2014-07-01T00%3A00%3A00Z','2014-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2014 
         store_price_info_into_disk('USD_JPY','2015-01-01T00%3A00%3A00Z','2015-06-30T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the first half year of 2015
-        #store_price_info_into_disk('USD_JPY','2012-07-01T00%3A00%3A00Z','2015-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2015
+        store_price_info_into_disk('USD_JPY','2015-07-01T00%3A00%3A00Z','2015-12-31T23%3A59%3A59Z','H1') # dump H1 USD_JPY price for the second half year of 2015
         exit(0)
     if args.save_csv:
         convert_to_csv()
         exit(0)
 
 
-    price_list_eur_usd_h1 = store_price_into_memory(instrument="EUR_USD", granularity="H1")
-    price_gap_sort_eur_usd_h1 = sorted( price_list_eur_usd_h1, key=lambda k: k['highBid'] -k['lowBid'],reverse = True)
-    for price in price_gap_sort_eur_usd_h1[0:20]:
-        print((price['highBid'] - price['lowBid'],price['time']))
+    #price_list_eur_usd_h1 = store_price_into_memory(instrument="EUR_USD", granularity="H1")
+    #price_gap_sort_eur_usd_h1 = sorted( price_list_eur_usd_h1, key=lambda k: k['highBid'] -k['lowBid'],reverse = True)
+    #for price in price_gap_sort_eur_usd_h1[0:20]:
+    #    print((price['highBid'] - price['lowBid'],price['time']))
 
-    price_list_usd_jpy_h1 = store_price_into_memory(instrument="USD_JPY", granularity="H1")
-    price_gap_sort_usd_jpy_h1 = sorted( price_list_usd_jpy_h1, key=lambda k: k['highBid'] -k['lowBid'],reverse = True)
+    #price_list_usd_jpy_h1 = store_price_into_memory(instrument="USD_JPY", granularity="H1")
+    #price_gap_sort_usd_jpy_h1 = sorted( price_list_usd_jpy_h1, key=lambda k: k['highBid'] -k['lowBid'],reverse = True)
 
-    for price in price_gap_sort_usd_jpy_h1[0:20]:
-        print((price['highBid'] - price['lowBid'],price['time']))
-    simpleTrade1()
-    simpleTrade2()
-    simpleTrade3()
+    #for price in price_gap_sort_usd_jpy_h1[0:20]:
+    #    print((price['highBid'] - price['lowBid'],price['time']))
+    #simpleTrade1()
+    #simpleTrade2()
+    #simpleTrade3()
 
