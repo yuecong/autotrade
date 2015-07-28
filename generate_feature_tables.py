@@ -319,7 +319,7 @@ def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 1000
     date_order = keys_sorted.index(date_str)
     if date_order  < len(keys_sorted) -1:
         cal_date_str = keys_sorted[date_order +1]
-        pips = (float(day_price_info[cal_date_str][4]) - float(day_price_info[cal_date_str][3])) *pip_unit # (day_close - day_open ) for the next day
+        pips = (float(day_price_info[cal_date_str][N_DAY_AVG]) - float(day_price_info[date_str][N_DAY_AVG])) *pip_unit # day_avg_next_day - day_avg_the_day
         #print(pips)
         if int(pips) > MINMUM_PIP: #Buy
             action = 'buy'
@@ -328,6 +328,15 @@ def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 1000
         else:
             action ='hold'
     return pips,action
+
+def calculate_pips(day_price_info,date_str,pip_unit = 10000):
+    pips = 0.0
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    if date_order  > 0 :
+        yesterday_date_str = keys_sorted[date_order -1]
+        pips = (float(day_price_info[date_str][N_DAY_AVG]) - float(day_price_info[yesterday_date_str][N_DAY_AVG])) *pip_unit # day_avg_the_day - day_avg_yesterday
+    return pips
 
 def calculate_Momentum_roc(day_price_info,date_str,n_day):
     momentum =0.0
@@ -465,7 +474,7 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  if 'JPY' in currency_pair:
                      pip_unit = 100
                  (m_list[N_PIP_NEXT_DAY],m_list[N_PREDICTION_ACTION]) = calculate_pridiction_action_next_day(source_day_price_info,key,pip_unit)
-                 m_list[N_PIP] = (float(m_list[N_DAY_CLOSE]) - float(m_list[N_DAY_OPEN]) ) * float(pip_unit)
+                 m_list[N_PIP] = calculate_pips(source_day_price_info,key,pip_unit)
 
                  #FAST_K & FAST_D
                  (fast_k_3day,fast_d_3day) = calculate_fast_k_d(source_day_price_info,key,3)
