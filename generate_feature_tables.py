@@ -221,7 +221,7 @@ def calculate_ema(day_price_info,date_str,n_day):
        ema = n_value / (date_order+1) 
     else:
         yesterday_date = keys_sorted[date_order-1]
-        ema = float(day_price_info[yesterday_date][N_DAY_CLOSE]) * (2.0/(n_day +1.0)) + float(day_price_info[yesterday_date][EMA_COL_NUM]) *(1-(2.0/(n_day+1.0)))
+        ema = float(day_price_info[date_str][N_DAY_CLOSE]) * (2.0/(n_day +1.0)) + float(day_price_info[yesterday_date][EMA_COL_NUM]) *(1-(2.0/(n_day+1.0)))
 
     return ema
 
@@ -532,6 +532,9 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  #MACD
                  m_list[N_EMA_12] = calculate_ema(source_day_price_info,key,12)
                  m_list[N_EMA_26] = calculate_ema(source_day_price_info,key,26)
+                 #update ema for source_day_price_info
+                 source_day_price_info[key][N_EMA_12] = m_list[N_EMA_12]
+                 source_day_price_info[key][N_EMA_26] = m_list[N_EMA_26]
                  m_list[N_MACD] = m_list[N_EMA_12] - m_list[N_EMA_26]  
 
                  #CCI
