@@ -281,9 +281,13 @@ def calculate_proc(day_price_info,date_str,n_day):
     return proc
  
 def calculate_fast_k_d(day_price_info,date_str,n_day):
+   #Fast K 100 * [( C - L (n) ) / ( H (n) – L (n) )] . Use the data in same day as initial value
+   #L(n) means the lowest Low during the n-day period
+   #H(n) means the highest high during the n-day period
+   
    price = day_price_info[date_str]
    #100 * [( C - L (n) ) / ( H (n) – L (n) )] . Use the data in same day as initial value
-   fast_k = 100.0 * (float(price[4]) - float(price[6])) /(float(price[5]) - float(price[6]) + AVOID_ZERO_DIVISION)   
+   fast_k = 100.0 * (float(price[N_DAY_CLOSE]) - float(price[N_DAY_LOW])) /(float(price[N_DAY_HIGH]) - float(price[N_DAY_LOW]) + AVOID_ZERO_DIVISION)   
    fast_d = fast_k
 
    #calculate fast_k
@@ -293,7 +297,7 @@ def calculate_fast_k_d(day_price_info,date_str,n_day):
        cal_date_str = keys_sorted[date_order - n_day]
        price_n_day = day_price_info[cal_date_str]
        #100 * [( C – L (n) ) / ( H (n) – L (n) )]
-       fast_k = 100.0 * (float(price[4]) - float(price_n_day[6])) /(float(price_n_day[5]) - float(price_n_day[6]) + AVOID_ZERO_DIVISION)
+       fast_k = 100.0 * (float(price[N_DAY_CLOSE]) - float(price_n_day[N_DAY_LOW])) /(float(price_n_day[N_DAY_HIGH]) - float(price_n_day[N_DAY_LOW]) + AVOID_ZERO_DIVISION)
        fast_d = fast_k
 
    #calculate fast_d  (3-period average of fask_k) 
@@ -304,9 +308,9 @@ def calculate_fast_k_d(day_price_info,date_str,n_day):
        price_n_day = day_price_info[cal_date_str]
        price_n_day_1 = day_price_info[cal_date_str_1]
        price_n_day_2 = day_price_info[cal_date_str_2]
-       fast_d = ( (100.0 * (float(price[4]) - float(price_n_day[6])) /(float(price_n_day[5]) - float(price_n_day[6]) + AVOID_ZERO_DIVISION))
-                 + (100.0 * (float(price[4]) - float(price_n_day_1[6])) /(float(price_n_day_1[5]) - float(price_n_day_1[6]) + AVOID_ZERO_DIVISION))
-                 + (100.0 * (float(price[4]) - float(price_n_day_2[6])) /(float(price_n_day_2[5]) - float(price_n_day_2[6]) + AVOID_ZERO_DIVISION))
+       fast_d = ( (100.0 * (float(price[N_DAY_CLOSE]) - float(price_n_day[N_DAY_LOW])) /(float(price_n_day[N_DAY_HIGH]) - float(price_n_day[N_DAY_LOW]) + AVOID_ZERO_DIVISION))
+                 + (100.0 * (float(price[N_DAY_CLOSE]) - float(price_n_day_1[N_DAY_LOW])) /(float(price_n_day_1[N_DAY_HIGH]) - float(price_n_day_1[N_DAY_LOW]) + AVOID_ZERO_DIVISION))
+                 + (100.0 * (float(price[N_DAY_CLOSE]) - float(price_n_day_2[N_DAY_LOW])) /(float(price_n_day_2[N_DAY_HIGH]) - float(price_n_day_2[N_DAY_LOW]) + AVOID_ZERO_DIVISION))
                  ) / 3.0
 
    return fast_k,fast_d
@@ -345,8 +349,8 @@ def calculate_Momentum_roc(day_price_info,date_str,n_day):
     date_order = keys_sorted.index(date_str)
     if date_order  > n_day -1:
         cal_date_str = keys_sorted[date_order - n_day]
-        momentum = float(day_price_info[date_str][4]) - float(day_price_info[cal_date_str][4])  # day_close - n_day_close
-        roc = (float(day_price_info[date_str][4]) - float(day_price_info[cal_date_str][4])) /float(day_price_info[cal_date_str][4]) #(day_close - n_day_close)/ n_day_close
+        momentum = float(day_price_info[date_str][N_DAY_CLOSE]) - float(day_price_info[cal_date_str][N_DAY_CLOSE])  # day_close - n_day_close
+        roc = (float(day_price_info[date_str][N_DAY_CLOSE]) - float(day_price_info[cal_date_str][N_DAY_CLOSE])) /float(day_price_info[cal_date_str][N_DAY_CLOSE]) #(day_close - n_day_close)/ n_day_close
     return momentum,roc
 
 def generate_day_price_info(currency_pair,input_csv,output_csv):
