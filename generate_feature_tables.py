@@ -291,21 +291,31 @@ def calculate_fast_k(day_price_info,date_str,n_day):
    date_order = keys_sorted.index(date_str)
    start_date_order = max(0,date_order - n_day)
    high_list = [day_price_info[cal_date_str][N_DAY_HIGH] for cal_date_str in keys_sorted[start_date_order:date_order+1]]
-   print(high_list)
-   high = max(float(high_list[:]))
-   print(high)
-   low = min([float(day_price_info[cal_date_str][N_DAY_LOW]) for cal_date_str in keys_sorted[start_date_order:date_order+1]])
-   fast_k = 100.0 * (float(day_price_info[date_str][N_DAY_CLOSE]) - low) /(high- low)
-   return fast_k
+   high = 0.0
+   for high_price in high_list:
+        high = max(float(high_price),high)
 
+   low_list = [day_price_info[cal_date_str][N_DAY_LOW] for cal_date_str in keys_sorted[start_date_order:date_order+1]]
+   low = 0.0
+   for low_price in low_list:
+        low = min(float(low_price),low)
+   fast_k = 100.0 * (float(day_price_info[date_str][N_DAY_CLOSE]) - low) /(high- low)
+   print(fast_k)
+   return fast_k
+ 
 def calculate_fast_d(day_price_info,date_str,fask_k_column):
     #calculate fast_d  (3-period average of fask_k)
     keys_sorted = sorted(day_price_info.keys())
     date_order = keys_sorted.index(date_str)
     start_date_order = max(0,date_order - 2)
-    fast_d = sum(float([day_price_info[cal_date_str][fask_k_column]) for cal_date_str in keys_sorted[start_date_order:date_order+1]]) / (date_order - start_date_order +1)
-    return fast_d
+    fast_k_list = [day_price_info[cal_date_str][fask_k_column] for cal_date_str in keys_sorted[start_date_order:date_order+1]]
+    fast_k_sum = 0.0
+    for fast_k_str in fast_k_list:
+        fast_k_sum +=float(fast_k_str)
+    fast_d = fast_k_sum/ (date_order -start_date_order +1)
 
+    return fast_d
+    
 def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 10000):
     action = 'buy'
     pips = 0.0
