@@ -294,13 +294,11 @@ def calculate_fast_k(day_price_info,date_str,n_day):
    high = 0.0
    for high_price in high_list:
         high = max(float(high_price),high)
-
    low_list = [day_price_info[cal_date_str][N_DAY_LOW] for cal_date_str in keys_sorted[start_date_order:date_order+1]]
-   low = 0.0
+   low = 10000.0
    for low_price in low_list:
         low = min(float(low_price),low)
    fast_k = 100.0 * (float(day_price_info[date_str][N_DAY_CLOSE]) - low) /(high- low)
-   print(fast_k)
    return fast_k
  
 def calculate_fast_d(day_price_info,date_str,fask_k_column):
@@ -313,7 +311,6 @@ def calculate_fast_d(day_price_info,date_str,fask_k_column):
     for fast_k_str in fast_k_list:
         fast_k_sum +=float(fast_k_str)
     fast_d = fast_k_sum/ (date_order -start_date_order +1)
-
     return fast_d
     
 def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 10000):
@@ -487,24 +484,31 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  fast_k_8day = calculate_fast_k(source_day_price_info,key,8)
                  fast_k_9day = calculate_fast_k(source_day_price_info,key,9)
                  fast_k_10day = calculate_fast_k(source_day_price_info,key,10)
+                 m_list[N_FAST_K_3]= fast_k_3day
+                 m_list[N_FAST_K_4]= fast_k_4day
+                 m_list[N_FAST_K_5]= fast_k_5day
+                 m_list[N_FAST_K_8]= fast_k_8day
+                 m_list[N_FAST_K_9]= fast_k_9day
+                 m_list[N_FAST_K_10]= fast_k_10day
+
+                 #Update source_day_price_info to get updated fast_k
+                 source_day_price_info[key][N_FAST_K_3] = m_list[N_FAST_K_3]
+                 source_day_price_info[key][N_FAST_K_4] = m_list[N_FAST_K_4]
+                 source_day_price_info[key][N_FAST_K_5] = m_list[N_FAST_K_5]
+                 source_day_price_info[key][N_FAST_K_8] = m_list[N_FAST_K_8]
+                 source_day_price_info[key][N_FAST_K_9] = m_list[N_FAST_K_9]
+                 source_day_price_info[key][N_FAST_K_10] = m_list[N_FAST_K_10]
                  fast_d_3day = calculate_fast_d(source_day_price_info,key,N_FAST_K_3)
                  fast_d_4day = calculate_fast_d(source_day_price_info,key,N_FAST_K_4)
                  fast_d_5day = calculate_fast_d(source_day_price_info,key,N_FAST_K_5)
                  fast_d_8day = calculate_fast_d(source_day_price_info,key,N_FAST_K_8)
                  fast_d_9day = calculate_fast_d(source_day_price_info,key,N_FAST_K_9)
                  fast_d_10day = calculate_fast_d(source_day_price_info,key,N_FAST_K_10)
-
-                 m_list[N_FAST_K_3]= fast_k_3day
                  m_list[N_FAST_D_3]= fast_d_3day
-                 m_list[N_FAST_K_4]= fast_k_4day
                  m_list[N_FAST_D_4]= fast_d_4day
-                 m_list[N_FAST_K_5]= fast_k_5day
                  m_list[N_FAST_D_5]= fast_d_5day
-                 m_list[N_FAST_K_8]= fast_k_8day
                  m_list[N_FAST_D_8]= fast_d_8day
-                 m_list[N_FAST_K_9]= fast_k_9day
                  m_list[N_FAST_D_9]= fast_d_9day
-                 m_list[N_FAST_K_10]= fast_k_10day
                  m_list[N_FAST_D_10]= fast_d_10day
 
                  #PROC 12/13/14/15 days
