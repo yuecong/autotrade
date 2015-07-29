@@ -17,6 +17,7 @@ AVOID_ZERO_DIVISION = 0.0000001
 I_YEAR = 0
 I_MONTH = 1
 I_DAY = 2
+I_HOUR = 3
 I_OPENBID = 6
 I_OPENASK = 7
 I_HIGHBID = 8
@@ -98,7 +99,9 @@ N_DAY_HIGH_SLOPE_30 = 66
 N_PIP = 67
 N_PIP_NEXT_DAY = 68
 N_VOLUME = 69
-MAXIMUM_COLUMN = 70
+N_ACTIVE_HOUR = 70
+N_ACTIVE_HOUR_VOLUME = 71
+MAXIMUM_COLUMN = 72
 CSV_HEADER = ("Date,Currency_pair,Prediction_action,"
               "Day Open,Day Close,Day High,Day Low,Day Average,"
               "Momentum_3day,Momentum_4day,Momentum_5day,Momentum_8day,Momentum_9day,Momentum_10day,"
@@ -114,7 +117,7 @@ CSV_HEADER = ("Date,Currency_pair,Prediction_action,"
               "2DAY_HIGH,2DAY_LOW,1DAY_HIGH_LOW_AVG,2DAY_HIGH_LOW_AVG,"
               "High_slope_3day,High_slope_4day,High_slope_5day,High_slope_8day,High_slope_10day,"
               "High_slope_12day,High_slope_15day,High_slope_20day,High_slope_25day,High_slope_30day,"
-              "Pips,Prediction_Pips,Volume"
+              "Pips,Prediction_Pips,Volume,Active Hour,Active Hour Volume"
              ) 
 
 def calculate_high_slope(day_price_info,date_str,n_day):
@@ -369,10 +372,10 @@ def generate_day_price_info(currency_pair,input_csv,output_csv):
                 continue
             key = m_list[I_YEAR] +'-' + m_list[I_MONTH] + '-' + m_list[I_DAY]
             if input_price_h1.has_key(key):#append data into the same date
-                input_price_h1[key].append(m_list[I_OPENBID:I_VOLUME +1])
+                input_price_h1[key].append(m_list)
             else:
                 input_price_h1[key] = []
-                input_price_h1[key].append(m_list[I_OPENBID:I_VOLUME +1])
+                input_price_h1[key].append(m_list)
     
     #generate price info to day base
     with open(output_csv,'w') as f:
@@ -382,27 +385,36 @@ def generate_day_price_info(currency_pair,input_csv,output_csv):
             data[N_DATE] = key #date
             data[N_CURRENCY_PAIR] = currency_pair # currency_pair
             data[N_PREDICTION_ACTION] = 'hold' #next_day_prediction_action
-            data[N_DAY_OPEN] = (float(input_price_h1[key][0][I_OPENBID - I_OPENBID]) + float(input_price_h1[key][0][I_OPENASK - I_OPENBID])) /2.0 # day_open (Openbid + OpenAsk )/2
-            data[N_DAY_CLOSE] = (float(input_price_h1[key][-1][I_CLOSEBID - I_OPENBID]) + float(input_price_h1[key][-1][I_CLOSEASK -I_OPENBID])) /2.0 # day_close (closebid + closeAsk )/2
+            data[N_DAY_OPEN] = (float(input_price_h1[key][0][I_OPENBID]) + float(input_price_h1[key][0][I_OPENASK])) /2.0 # day_open (Openbid + OpenAsk )/2
+            data[N_DAY_CLOSE] = (float(input_price_h1[key][-1][I_CLOSEBID]) + float(input_price_h1[key][-1][I_CLOSEASK])) /2.0 # day_close (closebid + closeAsk )/2
             #day_high,day_low,day_avg
-            day_high = (float(input_price_h1[key][0][I_HIGHBID - I_OPENBID]) + float(input_price_h1[key][0][ I_HIGHASK - I_OPENBID])) / 2.0 #use the first highBid/highAsk as initial value
-            day_low = (float(input_price_h1[key][0][I_LOWBID - I_OPENBID]) + float(input_price_h1[key][0][ I_LOWASK - I_OPENBID])) / 2.0 #use the first lowBid/lowAsk as initial value
+            day_high = (float(input_price_h1[key][0][I_HIGHBID]) + float(input_price_h1[key][0][I_HIGHASK])) / 2.0 #use the first highBid/highAsk as initial value
+            day_low = (float(input_price_h1[key][0][I_LOWBID]) + float(input_price_h1[key][0][I_LOWASK])) / 2.0 #use the first lowBid/lowAsk as initial value
             day_avg =0.0
             day_volume_total =0.0
             day_price_total =0.0
+            day_high_volume_hour = 0
+            day_volume_active_hour = 0.0
             for h1_price in input_price_h1[key]:
-                if day_high < (float(h1_price[I_HIGHBID - I_OPENBID]) + float(h1_price[I_HIGHASK - I_OPENBID])) /2.0:
-                    day_high = (float(h1_price[I_HIGHBID - I_OPENBID]) + float(h1_price[I_HIGHASK - I_OPENBID])) /2.0
-                if day_low > (float(h1_price[I_LOWBID - I_OPENBID]) + float(h1_price[I_LOWASK - I_OPENBID])) /2.0:
-                    day_low = (float(h1_price[I_LOWBID - I_OPENBID]) + float(h1_price[I_LOWASK - I_OPENBID])) /2.0
-                day_price_total += ((float(h1_price[I_CLOSEBID - I_OPENBID]) +float(h1_price[I_CLOSEASK - I_OPENBID]) ) /2.0) * float(h1_price[8])
-                day_volume_total += float(h1_price[I_VOLUME - I_OPENBID])
+                if day_volume_active_hour <float(h1_price[I_VOLUME]): 
+                    day_volume_active_hour = float(h1_price[I_VOLUME])
+                    day_high_volume_hour = int(h1_price[I_HOUR])
+    
+
+                if day_high < (float(h1_price[I_HIGHBID]) + float(h1_price[I_HIGHASK])) /2.0:
+                    day_high = (float(h1_price[I_HIGHBID]) + float(h1_price[I_HIGHASK])) /2.0
+                if day_low > (float(h1_price[I_LOWBID]) + float(h1_price[I_LOWASK])) /2.0:
+                    day_low = (float(h1_price[I_LOWBID]) + float(h1_price[I_LOWASK])) /2.0
+                day_price_total += ((float(h1_price[I_CLOSEBID]) +float(h1_price[I_CLOSEASK]) ) /2.0) * float(h1_price[I_VOLUME])
+                day_volume_total += float(h1_price[I_VOLUME])
             day_avg = day_price_total / day_volume_total
             data[N_DAY_HIGH] = day_high
             data[N_DAY_LOW] = day_low
             data[N_DAY_AVG] = day_avg
             data[N_VOLUME] = day_volume_total
-            day_price_info[key] = data
+            data[N_ACTIVE_HOUR] = day_high_volume_hour
+            data[N_ACTIVE_HOUR_VOLUME] = day_volume_active_hour
+            day_price_info[key] = data 
             f.write(str(data).strip('[]')+ '\n')
 
 
