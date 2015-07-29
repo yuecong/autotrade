@@ -280,41 +280,31 @@ def calculate_proc(day_price_info,date_str,n_day):
         proc = (float(price[N_DAY_CLOSE]) - float(price_n_day[N_DAY_CLOSE])) / float(price_n_day[N_DAY_CLOSE])
     return proc
  
-def calculate_fast_k_d(day_price_info,date_str,n_day):
+def calculate_fast_k(day_price_info,date_str,n_day):
+
    #Fast K 100 * [( C - L (n) ) / ( H (n) – L (n) )] . Use the data in same day as initial value
    #L(n) means the lowest Low during the n-day period
    #H(n) means the highest high during the n-day period
-   
-   price = day_price_info[date_str]
-   #100 * [( C - L (n) ) / ( H (n) – L (n) )] . Use the data in same day as initial value
-   fast_k = 100.0 * (float(price[N_DAY_CLOSE]) - float(price[N_DAY_LOW])) /(float(price[N_DAY_HIGH]) - float(price[N_DAY_LOW]) + AVOID_ZERO_DIVISION)   
-   fast_d = fast_k
+   #http://investexcel.net/how-to-calculate-the-stochastic-oscillator/
 
-   #calculate fast_k
    keys_sorted = sorted(day_price_info.keys())
    date_order = keys_sorted.index(date_str)
-   if date_order  > n_day -1:
-       cal_date_str = keys_sorted[date_order - n_day]
-       price_n_day = day_price_info[cal_date_str]
-       #100 * [( C – L (n) ) / ( H (n) – L (n) )]
-       fast_k = 100.0 * (float(price[N_DAY_CLOSE]) - float(price_n_day[N_DAY_LOW])) /(float(price_n_day[N_DAY_HIGH]) - float(price_n_day[N_DAY_LOW]) + AVOID_ZERO_DIVISION)
-       fast_d = fast_k
+   start_date_order = max(0,date_order - n_day)
+   high_list = [day_price_info[cal_date_str][N_DAY_HIGH] for cal_date_str in keys_sorted[start_date_order:date_order+1]]
+   print(high_list)
+   high = max(float(high_list[:]))
+   print(high)
+   low = min([float(day_price_info[cal_date_str][N_DAY_LOW]) for cal_date_str in keys_sorted[start_date_order:date_order+1]])
+   fast_k = 100.0 * (float(day_price_info[date_str][N_DAY_CLOSE]) - low) /(high- low)
+   return fast_k
 
-   #calculate fast_d  (3-period average of fask_k) 
-   if date_order  > n_day+2 -1 :
-       cal_date_str = keys_sorted[date_order - n_day]
-       cal_date_str_1 = keys_sorted[date_order - n_day +1]
-       cal_date_str_2 = keys_sorted[date_order - n_day + 2]
-       price_n_day = day_price_info[cal_date_str]
-       price_n_day_1 = day_price_info[cal_date_str_1]
-       price_n_day_2 = day_price_info[cal_date_str_2]
-       fast_d = ( (100.0 * (float(price[N_DAY_CLOSE]) - float(price_n_day[N_DAY_LOW])) /(float(price_n_day[N_DAY_HIGH]) - float(price_n_day[N_DAY_LOW]) + AVOID_ZERO_DIVISION))
-                 + (100.0 * (float(price[N_DAY_CLOSE]) - float(price_n_day_1[N_DAY_LOW])) /(float(price_n_day_1[N_DAY_HIGH]) - float(price_n_day_1[N_DAY_LOW]) + AVOID_ZERO_DIVISION))
-                 + (100.0 * (float(price[N_DAY_CLOSE]) - float(price_n_day_2[N_DAY_LOW])) /(float(price_n_day_2[N_DAY_HIGH]) - float(price_n_day_2[N_DAY_LOW]) + AVOID_ZERO_DIVISION))
-                 ) / 3.0
-
-   return fast_k,fast_d
-
+def calculate_fast_d(day_price_info,date_str,fask_k_column):
+    #calculate fast_d  (3-period average of fask_k)
+    keys_sorted = sorted(day_price_info.keys())
+    date_order = keys_sorted.index(date_str)
+    start_date_order = max(0,date_order - 2)
+    fast_d = sum(float([day_price_info[cal_date_str][fask_k_column]) for cal_date_str in keys_sorted[start_date_order:date_order+1]]) / (date_order - start_date_order +1)
+    return fast_d
 
 def calculate_pridiction_action_next_day(day_price_info,date_str,pip_unit = 10000):
     action = 'buy'
@@ -481,12 +471,19 @@ def update_day_price_info(update_csv_lists,source_csv_lists,currency_pair):
                  m_list[N_PIP] = calculate_pips(source_day_price_info,key,pip_unit)
 
                  #FAST_K & FAST_D
-                 (fast_k_3day,fast_d_3day) = calculate_fast_k_d(source_day_price_info,key,3)
-                 (fast_k_4day,fast_d_4day) = calculate_fast_k_d(source_day_price_info,key,4)
-                 (fast_k_5day,fast_d_5day) = calculate_fast_k_d(source_day_price_info,key,5)
-                 (fast_k_8day,fast_d_8day) = calculate_fast_k_d(source_day_price_info,key,8)
-                 (fast_k_9day,fast_d_9day) = calculate_fast_k_d(source_day_price_info,key,9)
-                 (fast_k_10day,fast_d_10day) = calculate_fast_k_d(source_day_price_info,key,10)
+                 fast_k_3day = calculate_fast_k(source_day_price_info,key,3)
+                 fast_k_4day = calculate_fast_k(source_day_price_info,key,4)
+                 fast_k_5day = calculate_fast_k(source_day_price_info,key,5)
+                 fast_k_8day = calculate_fast_k(source_day_price_info,key,8)
+                 fast_k_9day = calculate_fast_k(source_day_price_info,key,9)
+                 fast_k_10day = calculate_fast_k(source_day_price_info,key,10)
+                 fast_d_3day = calculate_fast_d(source_day_price_info,key,N_FAST_K_3)
+                 fast_d_4day = calculate_fast_d(source_day_price_info,key,N_FAST_K_4)
+                 fast_d_5day = calculate_fast_d(source_day_price_info,key,N_FAST_K_5)
+                 fast_d_8day = calculate_fast_d(source_day_price_info,key,N_FAST_K_8)
+                 fast_d_9day = calculate_fast_d(source_day_price_info,key,N_FAST_K_9)
+                 fast_d_10day = calculate_fast_d(source_day_price_info,key,N_FAST_K_10)
+
                  m_list[N_FAST_K_3]= fast_k_3day
                  m_list[N_FAST_D_3]= fast_d_3day
                  m_list[N_FAST_K_4]= fast_k_4day
